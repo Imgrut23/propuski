@@ -60,7 +60,7 @@ label.chk input{width:auto}
   <form id="loginForm">
     <div><label for="who">Выберите себя в списке</label>
     <select id="who" required></select></div>
-    <div id="codeBox" class="hidden"><label for="code">Код старосты</label>
+    <div id="codeBox"><label for="code" id="codeLbl">Пароль группы</label>
     <input id="code" type="password" autocomplete="current-password"></div>
     <div class="err" id="err"></div>
     <button class="main" style="width:100%">Войти</button>
@@ -154,6 +154,7 @@ const DEFAULT_STUDENTS=[  // список группы 4501, подставля�
 "Буканова Виктория","Новик Александра","Паско Валентин","Прищик Альбина","Романович Мария",
 "Савилова Анастасия","Сарычев Арсений","Селькова Екатерина","Стамбровская Татьяна","Субоч Александра",
 "Тямчик Лилия","Цеханович Дарья","Щепко Ульяна"];
+const STUDENT_CODE="4501";        // пароль для студентов
 const HEAD_CODE="матарас";       // код для входа старосты (смените!); пусто = без кода
 const DB_URL="";                  // адрес Firebase Realtime Database; пусто = только этот браузер
 const RESET_HOUR=20;              // во сколько журнал переходит на новый день
@@ -217,7 +218,7 @@ function dropMark(d,n){
 /* ===== вход ===== */
 function setRole(r){
   role=r;$("tabU").classList.toggle("main",r==="user");$("tabH").classList.toggle("main",r==="head");
-  $("codeBox").classList.toggle("hidden",r!=="head");$("err").textContent="";fillWho();
+  $("codeLbl").textContent=r==="head"?"Пароль старосты":"Пароль группы";$("code").value="";$("err").textContent="";fillWho();
 }
 function fillWho(){
   const list=role==="head"?HEADS:db.students;
@@ -230,8 +231,9 @@ $("loginForm").onsubmit=async e=>{
   if(!v){$("err").textContent="Выберите себя в списке.";return}
   if(role==="head"){
     if(!HEADS.map(norm).includes(norm(v))){$("err").textContent="Этого имени нет в списке старост.";return}
-    if(HEAD_CODE&&$("code").value!==HEAD_CODE){$("err").textContent="Неверный код старосты.";return}
+    if(HEAD_CODE&&$("code").value!==HEAD_CODE){$("err").textContent="Неверный пароль.";return}
   }else{
+    if(STUDENT_CODE&&$("code").value!==STUDENT_CODE){$("err").textContent="Неверный пароль.";return}
     await pull();
     if(!db.students.some(s=>norm(s)===norm(v))){$("err").textContent="Вас нет в списке группы. Попросите старосту добавить вас.";return}
   }
