@@ -434,7 +434,7 @@ function renderUser(){
 const abs = db.students.filter(s => getMark(d, s) && hoursOf(getMark(d, s)) > 0);
   const unm = db.students.filter(s => !getMark(d, s));
   $("stu-group").innerHTML = abs.length 
-    ? abs.map(s => `<div style="padding:6px 0; border-bottom:1px solid var(--line)"><b>${s}</b>: ${describe(getMark(d, s))}</div>`).join("") 
+? abs.map(s => `<div style="padding:6px 0; border-bottom:1px solid var(--line)"><b>${s}</b>: ${describe(getMark(d, s))} (${hoursOf(getMark(d, s))} ч)</div>`).join("") 
     : '<p class="mute">Отсутствующих нет.</p>';
   if (unm.length) {
     $("stu-group").innerHTML += `<details class="mute" style="margin-top:10px"><summary>Ещё не отметились (${unm.length})</summary><div style="margin-top:5px">${unm.join("<br>")}</div></details>`;
