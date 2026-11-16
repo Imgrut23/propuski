@@ -266,7 +266,7 @@ body.bw .lg i{background:#555}
 
     <div data-t="today" class="card">
       <h2>Кто отметился</h2>
-      <p class="mute" style="margin:-6px 0 10px">Здесь отображаются все, у кого есть пропуски (или отметка «Н»). Списки отсортированы по имени.</p>
+      <p class="mute" style="margin:-6px 0 10px">Здесь отображаются все, у кого есть пропуски (или отметка «Н»). Кто не отмечался, считается присутствующим на паре. Списки отсортированы по имени.</p>
       
       <!-- Отсутствующие -->
       <div class="scroll"><table id="tbl"><thead><tr><th>Студент</th><th>Отметка</th><th>Часы</th><th>Кто</th><th></th></tr></thead><tbody></tbody></table></div>
@@ -994,14 +994,14 @@ function renderHead(){
 
   const unm=db.students.filter(n=>!getMark(d,n)&&!own(n));
   $("unm").classList.toggle("hidden",!unm.length);
-  $("unmS").textContent=`Не отметились: ${unm.length} из ${db.students.length}`;
+  $("unmS").textContent=`На паре, без отметок: ${unm.length} из ${db.students.length}`;
   const ul=$("unmL");ul.innerHTML="";
   unm.forEach(n=>{
     const row=document.createElement("div");row.className="urow";
     const nm=document.createElement("span");nm.textContent=n;
     const sel=document.createElement("select");
     sel.setAttribute("aria-label","Отметить: "+n);
-    sel.innerHTML='<option value="">отметить за него…</option><option value="+">✅ Присутствует</option>'+CODES.map(c=>`<option>${c}</option>`).join("");
+    sel.innerHTML='<option value="">на паре · отметить отсутствие…</option>'+CODES.map(c=>`<option>${c}</option>`).join("");
     sel.onchange=()=>{if(sel.value)headSet(n,sel.value==="+"?emptyP():Array(4).fill(sel.value))};
     row.append(nm,sel);ul.appendChild(row);
   });
@@ -1045,7 +1045,7 @@ function renderUser(){
   const cur=getMark(d,n),left=cur?Math.max(0,getLimit()-(cur.c||1)):getLimit(),locked=!!cur&&!isHead&&!isSvc&&(cur.by==="h"||left<=0);
   $("mstate").innerHTML=cur
     ?`<span class="ok">${cur.by==="h"?"Староста отметил":"Вы внесли отметку"}:</span> `+describe(cur)+(hoursOf(cur)?` (${hoursOf(cur)} ч)`:"")+'<div class="mute">'+(locked?"Изменить дальше может только староста.":"Можно изменить ещё: "+left+" р.")+'</div>'
-    :'<span class="pn">Вы ещё не отметились.</span> Отметку можно сохранить до '+getLimit()+' раз в день.';
+    :'<span class="ok">Вы на паре.</span> Отмечаться не нужно: пока нет отметки, вы считаетесь присутствующим. Если вас не будет, выберите причину и сохраните (до '+getLimit()+' раз в день).';
   
   if(!dirty){
     const p=cur?pairsOf(cur):emptyP();
@@ -1090,7 +1090,7 @@ function renderUser(){
     ? abs.map(s => `<div style="padding:6px 0; border-bottom:1px solid var(--line)"><b>${s}</b>: ${describe(getMark(d, s))} ${hoursOf(getMark(d, s)) ? `(${hoursOf(getMark(d, s))} ч)` : ""}</div>`).join("") 
     : '<p class="mute">Отсутствующих нет.</p>';
   if (unm.length) {
-    $("stu-group").innerHTML += `<details class="mute" style="margin-top:10px"><summary>Ещё не отметились (${unm.length})</summary><div style="margin-top:5px">${unm.join("<br>")}</div></details>`;
+    $("stu-group").innerHTML += `<details class="mute" style="margin-top:10px"><summary>На паре, без отметок (${unm.length})</summary><div style="margin-top:5px">${unm.join("<br>")}</div></details>`;
   }
 }
 
