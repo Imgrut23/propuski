@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Журнал пропусков</title>
 <style>
-:root{--bg:#f1f3f6;--card:#fff;--ink:#1b2433;--mute:#667085;--line:#d9dee7;--acc:#1f4fd8;--acc-ink:#fff;--bad:#b42318;--ok:#13795b;--warn:#fff3d6}
-@media (prefers-color-scheme:dark){:root{--bg:#10151f;--card:#18202e;--ink:#e8ecf3;--mute:#8d99ad;--line:#2a3447;--acc:#6d93ff;--acc-ink:#0b1220;--bad:#ff8a80;--ok:#5fd3a8;--warn:#3a3014}}
+:root{--bg:#f1f3f6;--card:#fff;--ink:#1b2433;--mute:#667085;--line:#d9dee7;--acc:#b3261e;--acc-ink:#fff;--bad:#b42318;--ok:#13795b;--warn:#fff3d6}
+@media (prefers-color-scheme:dark){:root{--bg:#10151f;--card:#18202e;--ink:#e8ecf3;--mute:#8d99ad;--line:#2a3447;--acc:#ff7a70;--acc-ink:#2a0a08;--bad:#ff8a80;--ok:#5fd3a8;--warn:#3a3014}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:700;margin:0}
 h2{font-size:20px;margin-bottom:10px}
-.wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:16px}
+.wrap{max-width:900px;margin:0 auto;padding:36px 16px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:16px;border-top:3px solid var(--acc)}
 input,select,textarea,button{font:inherit;color:inherit}
 input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
@@ -47,12 +47,30 @@ summary{cursor:pointer;font-weight:600}
 .urow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
 label.chk{display:flex;align-items:center;gap:8px}
 label.chk input{width:auto}
+#garland{position:fixed;top:0;left:0;right:0;height:24px;pointer-events:none;z-index:50;
+ background:
+  radial-gradient(circle at 10px 15px,#ff4d4d 5px,transparent 6px) 0 0/120px 24px repeat-x,
+  radial-gradient(circle at 40px 15px,#ffd84d 5px,transparent 6px) 0 0/120px 24px repeat-x,
+  radial-gradient(circle at 70px 15px,#4dd964 5px,transparent 6px) 0 0/120px 24px repeat-x,
+  radial-gradient(circle at 100px 15px,#4da6ff 5px,transparent 6px) 0 0/120px 24px repeat-x,
+  linear-gradient(#2e7d32,#2e7d32) 0 4px/100% 2px no-repeat;
+ animation:tw 1.8s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.5}to{opacity:1}}
+#snow{position:fixed;inset:0;pointer-events:none;z-index:40}
+@media (prefers-reduced-motion:reduce){#garland{animation:none}}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:6vh 12px;overflow:auto}
+.modal.hidden{display:none}
+.mbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;max-width:600px;width:100%}
+.mbox ul{padding-left:20px;margin:10px 0}.mbox li{margin-bottom:6px}
 </style>
 </head>
 <body>
+<div id="garland" aria-hidden="true"></div>
+<canvas id="snow" aria-hidden="true"></canvas>
 
 <section id="login" class="card hidden">
-  <h1>Журнал пропусков</h1>
+  <h1>🎄 Журнал пропусков</h1>
+  <p class="mute ny" style="margin:-6px 0 12px"></p>
   <div class="tabs">
     <button type="button" id="tabU" class="main">Я студент</button>
     <button type="button" id="tabH">Я староста</button>
@@ -60,8 +78,11 @@ label.chk input{width:auto}
   <form id="loginForm">
     <div><label for="who">Выберите себя в списке</label>
     <select id="who" required></select></div>
-    <div id="codeBox"><label for="code" id="codeLbl">Пароль группы</label>
+    <div id="codeBox"><label for="code" id="codeLbl">Пароль</label>
     <input id="code" type="password" autocomplete="current-password"></div>
+    <div id="gBox" class="hidden"><label for="gcode">Код группы (нужен только при первом входе)</label>
+    <input id="gcode" type="password"></div>
+    <label class="chk"><input type="checkbox" id="rem" checked> Запомнить меня</label>
     <div class="err" id="err"></div>
     <button class="main" style="width:100%">Войти</button>
   </form>
@@ -69,8 +90,8 @@ label.chk input{width:auto}
 
 <main id="app" class="wrap hidden">
   <div class="top">
-    <div><h1 style="font-size:26px">Журнал пропусков</h1><div class="mute" id="user"></div></div>
-    <button id="logout">Выйти</button>
+    <div><h1 style="font-size:26px">🎄 Журнал пропусков</h1><div class="mute" id="user"></div><div class="mute ny"></div></div>
+    <div class="ed"><button id="snowb" aria-pressed="true" title="Снег вкл/выкл">❄</button><button id="pbtn">Лог и новое</button><button id="logout">Выйти</button></div>
   </div>
 
   <!-- Староста -->
@@ -112,6 +133,12 @@ label.chk input{width:auto}
         <button id="csv">Скачать таблицу (CSV)</button>
       </div>
     </div>
+    <div class="card">
+      <h2>Пароли студентов</h2>
+      <p class="mute" style="margin:0 0 10px">Каждый студент придумывает свой пароль при первом входе. Если забыл, сбросьте, и он задаст новый.</p>
+      <div class="row"><div><select id="rpw" aria-label="Студент"></select></div><button id="rpwBtn">Сбросить пароль</button></div>
+      <p class="mute" id="rpwMsg" style="margin:10px 0 0"></p>
+    </div>
   </div>
 
   <!-- Студент -->
@@ -121,10 +148,9 @@ label.chk input{width:auto}
       <div id="mstate" style="margin-bottom:12px"></div>
       <div class="row"><div><label class="mute" for="mall">Весь день</label><select id="mall"></select></div></div>
       <div class="row" id="mpairs" style="margin-top:10px"></div>
-      <p class="mute" style="margin:10px 0 0">Болезнь (Б) ставится сразу на все 4 пары. Другие причины выбираются для каждой пары отдельно.</p>
+      <p class="mute" style="margin:10px 0 0">Болезнь (Б) ставится сразу на все 4 пары. Другие причины выбираются для каждой пары отдельно. Отметку можно внести один раз за день, дальше изменить её может только староста.</p>
       <div class="row" style="margin-top:12px">
         <button class="main" id="msave">Сохранить</button>
-        <button id="mcancel">Снять отметку</button>
       </div>
     </div>
     <div class="card"><h2>Мои пропуски</h2><div id="mine"></div></div>
@@ -148,6 +174,23 @@ label.chk input{width:auto}
   </div>
 </main>
 
+<div id="panel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="ptitle">
+  <div class="mbox">
+    <div class="top" style="margin:0"><h2 id="ptitle" style="margin:0">Лог и новое</h2><button id="pclose" aria-label="Закрыть">✕</button></div>
+    <div class="tabs" style="margin-top:12px"><button type="button" id="ptN" class="main">Что нового</button><button type="button" id="ptL">Лог действий</button></div>
+    <div id="pnew">
+      <ul>
+        <li><b>Личные пароли.</b> При первом входе студент придумывает свой пароль (нужен код группы один раз). Забыл пароль: староста сбросит его в разделе «Пароли студентов».</li>
+        <li><b>Запомнить меня.</b> Галочка на входе: если стоит, сайт не спросит пароль в следующий раз.</li>
+        <li><b>Один раз.</b> Студент вносит свою отметку за день один раз, менять её дальше может только староста.</li>
+        <li><b>Лог действий.</b> Староста видит все действия, студент только свои и те, что касаются его.</li>
+        <li><b>Новый год.</b> Гирлянда и снег. Кнопка ❄ вверху выключает снег.</li>
+      </ul>
+    </div>
+    <div id="plog" class="hidden"></div>
+  </div>
+</div>
+
 <script>
 /* ===== НАСТРОЙКИ ===== */
 const HEADS=["Алейников Владислав","Далидович Александра","Жигалкович Елизавета","Сарычев Арсений"];  // старосты: фамилия и имя
@@ -158,7 +201,7 @@ const DEFAULT_STUDENTS=[  // список группы 4501, подставля�
 "Буканова Виктория","Новик Александра","Паско Валентин","Прищик Альбина","Романович Мария",
 "Савилова Анастасия","Сарычев Арсений","Селькова Екатерина","Стамбровская Татьяна","Субоч Александра",
 "Тямчик Лилия","Цеханович Дарья","Щепко Ульяна"];
-const STUDENT_CODE="4501";        // пароль для студентов
+const STUDENT_CODE="4501";        // код группы: нужен студенту только при первом входе, чтобы создать личный пароль
 const HEAD_CODE="матарас";       // код для входа старосты (смените!); пусто = без кода
 const DB_URL="https://propuski-791e4-default-rtdb.europe-west1.firebasedatabase.app/";                  // адрес Firebase Realtime Database; пусто = только этот браузер
 const RESET_HOUR=20;              // во сколько журнал переходит на новый день
@@ -192,20 +235,20 @@ function describe(m){
   return [...new Set(p.filter(Boolean))].map(c=>c+": "+p.map((x,i)=>x===c?i+1:0).filter(Boolean).join(", ")+" п.").join("; ");
 }
 
-let me=null,isHead=false,role="user",seeded=false,dirty=false,db={students:[],marks:{}},undo=[],lastWork=workDate();
+let me=null,isHead=false,role="user",seeded=false,dirty=false,db={students:[],marks:{},users:{},log:{}},undo=[],lastWork=workDate();
 
 /* ===== хранение: общая база (если задан DB_URL) + копия в браузере ===== */
 const base=()=>DB_URL.replace(/\/$/,"")+"/journal";
 function save(){lsSet("absence:db",JSON.stringify(db))}
 function net(path,val){
   if(!DB_URL)return;
-  fetch(base()+path+".json",{method:val===null?"DELETE":"PUT",body:val===null?undefined:JSON.stringify(val)}).catch(()=>{});
+  return fetch(base()+path+".json",{method:val===null?"DELETE":"PUT",body:val===null?undefined:JSON.stringify(val)}).catch(()=>{});
 }
 async function pull(){
   let j=null;
   if(DB_URL){try{j=await (await fetch(base()+".json")).json()}catch(e){}}
   else{try{j=JSON.parse(lsGet("absence:db"))}catch(e){}}
-  if(j)db={students:j.students||[],marks:j.marks||{}};
+  if(j)db={students:j.students||[],marks:j.marks||{},users:j.users||{},log:j.log||{}};
   if(!db.students.length){db.students=[...DEFAULT_STUDENTS];seeded=true}
 }
 const getMark=(d,n)=>(db.marks[d]||{})[k(n)];
@@ -219,35 +262,73 @@ function dropMark(d,n){
   putMark(d,n);
 }
 
+/* ===== пароли, лог, запомнить ===== */
+async function hashPw(n,pw){
+  const x="absence|"+norm(n)+"|"+pw;
+  try{
+    const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(x));
+    return [...new Uint8Array(b)].map(v=>v.toString(16).padStart(2,"0")).join("");
+  }catch(e){let h=5381;for(const c of x)h=((h<<5)+h+c.charCodeAt(0))|0;return "x"+(h>>>0).toString(16)}
+}
+function logAct(a,n,w){
+  const t=Date.now(),key=t+"_"+Math.random().toString(36).slice(2,6),e={t,w:w||me||"",n:n||"",a};
+  db.log[key]=e;save();net("/log/"+key,e);
+}
+function rememberSet(o,rem){
+  lsSet("absence:current","");try{sessionStorage.removeItem("absence:current")}catch(e){}
+  if(rem)lsSet("absence:current",JSON.stringify(o));
+  else try{sessionStorage.setItem("absence:current",JSON.stringify(o))}catch(e){}
+}
+function savedLogin(){try{return JSON.parse(sessionStorage.getItem("absence:current")||lsGet("absence:current"))}catch(e){return null}}
+function rememberClear(){lsSet("absence:current","");try{sessionStorage.removeItem("absence:current")}catch(e){}}
+
 /* ===== вход ===== */
 function setRole(r){
   role=r;$("tabU").classList.toggle("main",r==="user");$("tabH").classList.toggle("main",r==="head");
-  $("codeLbl").textContent=r==="head"?"Пароль старосты":"Пароль группы";$("code").value="";$("err").textContent="";fillWho();
+  $("code").value="";$("gcode").value="";$("err").textContent="";fillWho();
 }
 function fillWho(){
   const list=role==="head"?HEADS:db.students;
   $("who").innerHTML=list.map(n=>`<option>${n}</option>`).join("");
+  updateHint();
 }
+function updateHint(){
+  const head=role==="head",has=!!db.users[k($("who").value||"")];
+  $("codeLbl").textContent=head?"Пароль старосты":(has?"Ваш пароль":"Придумайте себе пароль");
+  $("gBox").classList.toggle("hidden",head||has);
+}
+$("who").onchange=updateHint;
 $("tabU").onclick=()=>setRole("user");$("tabH").onclick=()=>setRole("head");
 $("loginForm").onsubmit=async e=>{
   e.preventDefault();
-  const v=$("who").value;
-  if(!v){$("err").textContent="Выберите себя в списке.";return}
+  const v=$("who").value,pw=$("code").value,err=t=>{$("err").textContent=t};
+  if(!v){err("Выберите себя в списке.");return}
   if(role==="head"){
-    if(!HEADS.map(norm).includes(norm(v))){$("err").textContent="Этого имени нет в списке старост.";return}
-    if(HEAD_CODE&&$("code").value!==HEAD_CODE){$("err").textContent="Неверный пароль.";return}
+    if(!HEADS.map(norm).includes(norm(v))){err("Этого имени нет в списке старост.");return}
+    if(HEAD_CODE&&pw!==HEAD_CODE){err("Неверный пароль.");return}
   }else{
-    if(STUDENT_CODE&&$("code").value!==STUDENT_CODE){$("err").textContent="Неверный пароль.";return}
     await pull();
-    if(!db.students.some(s=>norm(s)===norm(v))){$("err").textContent="Вас нет в списке группы. Попросите старосту добавить вас.";return}
+    if(!db.students.some(x=>norm(x)===norm(v))){err("Вас нет в списке группы. Попросите старосту добавить вас.");return}
+    const key=k(v),h=await hashPw(v,pw);
+    if(db.users[key]){
+      if(db.users[key]!==h){err("Неверный пароль. Если забыли, попросите старосту сбросить.");return}
+    }else{
+      if(STUDENT_CODE&&$("gcode").value!==STUDENT_CODE){err("Неверный код группы.");return}
+      if(pw.length<4){err("Пароль должен быть не короче 4 символов.");return}
+      db.users[key]=h;save();await net("/users/"+encodeURIComponent(key),h);
+      logAct("создал личный пароль",v,v);
+    }
   }
-  lsSet("absence:current",JSON.stringify({n:v,r:role}));start(v,role);
+  rememberSet({n:v,r:role},$("rem").checked);
+  await start(v,role);
+  logAct("вошёл как "+(role==="head"?"староста":"студент"));
 };
-$("logout").onclick=()=>{lsSet("absence:current","");me=null;$("code").value="";fillWho();show()};
+$("logout").onclick=()=>{rememberClear();me=null;$("code").value="";$("gcode").value="";fillWho();show()};
 
 async function start(name,r){
   me=name;isHead=r==="head";dirty=false;await pull();
   if(isHead&&seeded){putStudents();seeded=false}
+  if(isHead){const lim=Date.now()-60*864e5;Object.keys(db.log).forEach(x=>{if(db.log[x].t<lim){delete db.log[x];net("/log/"+x,null)}})}
   $("date").value=workDate();lastWork=workDate();show();
 }
 function show(){
@@ -275,18 +356,21 @@ function stats(from,to){
 
 /* ===== действия старосты ===== */
 function snap(){undo.push(JSON.stringify(db.marks));if(undo.length>30)undo.shift()}
-function headSet(n,p){snap();writeMark($("date").value,n,p,"h");render()}
-function headClear(n){snap();dropMark($("date").value,n);render()}
+function headSet(n,p){
+  const d=$("date").value;snap();writeMark(d,n,p,"h");
+  logAct("за "+fmt(d)+": "+describe({p})+(hoursOf({p})?" ("+hoursOf({p})+" ч)":""),n);render();
+}
+function headClear(n){const d=$("date").value;snap();dropMark(d,n);logAct("за "+fmt(d)+": снял отметку",n);render()}
 $("undo").onclick=()=>{
   if(!undo.length)return;
-  db.marks=JSON.parse(undo.pop());save();net("/marks",db.marks);render();
+  db.marks=JSON.parse(undo.pop());save();net("/marks",db.marks);logAct("отменил последнее действие");render();
 };
 $("date").onchange=render;$("from").onchange=render;$("to").onchange=render;
 $("add").onclick=()=>{
   $("names").value.split("\n").map(s=>s.trim().replace(/\s+/g," ")).filter(Boolean)
     .forEach(n=>{if(!db.students.includes(n))db.students.push(n)});
   db.students.sort((a,b)=>a.localeCompare(b,"ru"));
-  $("names").value="";putStudents();render();
+  $("names").value="";putStudents();logAct("изменил список группы");render();
 };
 $("csv").onclick=()=>{
   const dates=Object.keys(db.marks).sort(),st=stats();
@@ -309,15 +393,14 @@ $("mall").onchange=()=>{dirty=true;[0,1,2,3].forEach(i=>$("mp"+i).value=$("mall"
   dirty=true;
   if($("mp"+i).value==="Б"){[0,1,2,3].forEach(j=>$("mp"+j).value="Б");$("mall").value="Б"}
 });
-$("msave").onclick=()=>{
+$("msave").onclick=async()=>{
   const n=myName(),d=workDate();if(!n)return;
-  const cur=getMark(d,n);if(cur&&cur.by==="h")return;
-  writeMark(d,n,stuVals().map(v=>v==="+"?"":v),"s");dirty=false;render();
-};
-$("mcancel").onclick=()=>{
-  const n=myName(),d=workDate();if(!n)return;
-  const cur=getMark(d,n);if(!cur||cur.by==="h")return;
-  dropMark(d,n);dirty=false;render();
+  await pull();
+  if(getMark(d,n)){dirty=false;render();return}
+  const p=stuVals().map(v=>v==="+"?"":v);
+  writeMark(d,n,p,"s");
+  logAct("за "+fmt(d)+": "+describe({p})+(hoursOf({p})?" ("+hoursOf({p})+" ч)":""),n);
+  dirty=false;render();
 };
 
 /* ===== отрисовка ===== */
@@ -401,6 +484,13 @@ function renderHead(){
     row.append(nm,sel);ul.appendChild(row);
   });
 
+  const rs=$("rpw"),sig=db.students.map(x=>x+(db.users[k(x)]?"+":"-")).join("|");
+  if(rs.dataset.sig!==sig){
+    const prev=rs.value;
+    rs.innerHTML=db.students.map(x=>`<option value="${x}">${x}${db.users[k(x)]?"":" (нет пароля)"}</option>`).join("");
+    rs.dataset.sig=sig;if(prev)rs.value=prev;
+  }
+
   const st=stats($("from").value,$("to").value);
   const others=CODES.filter(c=>c!=="ПН"&&Object.values(st).some(x=>x.by[c]));
   const rows=Object.entries(st).sort((a,b)=>(b[1].by["ПН"]||0)-(a[1].by["ПН"]||0)||b[1].tot-a[1].tot);
@@ -414,17 +504,16 @@ function renderUser(){
   $("mdate").textContent=fmt(d);
   $("mark-card").classList.toggle("hidden",!n);
   if(!n){$("mine").innerHTML='<p class="mute">Вас нет в списке группы. Попросите старосту добавить вас.</p>';return}
-  const cur=getMark(d,n),locked=!!cur&&cur.by==="h";
+  const cur=getMark(d,n),locked=!!cur;
   $("mstate").innerHTML=cur
-    ?`<span class="ok">${locked?"Староста уже отметил":"Вы отметились"}:</span> `+describe(cur)+(hoursOf(cur)?` (${hoursOf(cur)} ч)`:"")
-    :'<span class="pn">Вы ещё не отметились.</span> Староста видит, кто не отметился.';
+    ?`<span class="ok">${cur.by==="h"?"Староста отметил":"Вы внесли отметку"}:</span> `+describe(cur)+(hoursOf(cur)?` (${hoursOf(cur)} ч)`:"")+'<div class="mute">Изменить дальше может только староста.</div>'
+    :'<span class="pn">Вы ещё не отметились.</span> Отметку можно внести один раз.';
   if(!dirty){
     const p=cur?pairsOf(cur):emptyP();
     [0,1,2,3].forEach(i=>$("mp"+i).value=p[i]||"+");
     $("mall").value=p.every(x=>x===p[0])?(p[0]||"+"):"+";
   }
   ["mall","mp0","mp1","mp2","mp3","msave"].forEach(id=>$(id).disabled=locked);
-  $("mcancel").disabled=locked||!cur;
   const st=stats()[n],items=[];
   Object.keys(db.marks).sort().reverse().forEach(x=>{const m=getMark(x,n);if(m&&hoursOf(m))items.push([x,m])});
   $("mine").innerHTML=`<p><span class="tag">Всего: ${st.tot} ч</span><span class="tag ${st.by["ПН"]?"pn":""}">ПН: ${st.by["ПН"]||0} ч</span></p>`+
@@ -457,10 +546,70 @@ setInterval(async()=>{
   rollover();
 },15000);
 
+/* ===== сброс пароля старостой ===== */
+$("rpwBtn").onclick=()=>{
+  const n=$("rpw").value;if(!n)return;
+  if(!db.users[k(n)]){$("rpwMsg").textContent=n+": пароль ещё не создан.";return}
+  delete db.users[k(n)];save();net("/users/"+encodeURIComponent(k(n)),null);
+  logAct("сбросил пароль",n);
+  $("rpwMsg").textContent="Пароль сброшен. "+n+" задаст новый при следующем входе.";render();
+};
+
+/* ===== лог и новое ===== */
+function renderPanel(){
+  const box=$("plog");box.innerHTML="";
+  const list=Object.values(db.log||{}).filter(e=>isHead||e.w===me||e.n===me).sort((a,b)=>b.t-a.t).slice(0,150);
+  if(!list.length){box.innerHTML='<p class="mute">Записей пока нет.</p>';return}
+  const t=document.createElement("table");
+  t.innerHTML="<thead><tr><th>Когда</th><th>Кто</th><th>Действие</th></tr></thead><tbody></tbody>";
+  list.forEach(e=>{
+    const tr=t.tBodies[0].insertRow(),dt=new Date(e.t);
+    tr.insertCell().textContent=pad(dt.getDate())+"."+pad(dt.getMonth()+1)+" "+pad(dt.getHours())+":"+pad(dt.getMinutes());
+    tr.insertCell().textContent=e.w;
+    const c=tr.insertCell();c.className="n";c.textContent=e.a+(e.n&&e.n!==e.w?" → "+e.n:"");
+  });
+  const w=document.createElement("div");w.className="scroll";w.appendChild(t);box.appendChild(w);
+}
+function ptab(l){
+  $("pnew").classList.toggle("hidden",l);$("plog").classList.toggle("hidden",!l);
+  $("ptN").classList.toggle("main",!l);$("ptL").classList.toggle("main",l);
+  if(l)renderPanel();
+}
+$("ptN").onclick=()=>ptab(false);$("ptL").onclick=()=>ptab(true);
+$("pbtn").onclick=async()=>{$("panel").classList.remove("hidden");ptab(false);$("pclose").focus();await pull();if(!$("plog").classList.contains("hidden"))renderPanel()};
+$("pclose").onclick=()=>$("panel").classList.add("hidden");
+$("panel").onclick=e=>{if(e.target===$("panel"))$("panel").classList.add("hidden")};
+addEventListener("keydown",e=>{if(e.key==="Escape")$("panel").classList.add("hidden")});
+
+/* ===== новый год ===== */
+(function(){
+  const n=new Date(),y=n.getFullYear(),txt=(n.getMonth()===0&&n.getDate()<=10)?"🎉 С Новым годом!":"До Нового года: "+Math.ceil((new Date(y+1,0,1)-n)/864e5)+" дн.";
+  document.querySelectorAll(".ny").forEach(e=>e.textContent=txt);
+  const cv=$("snow"),cx=cv.getContext("2d"),reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W=0,H=0,fl=[],on=lsGet("absence:snow")!=="0",raf=0;
+  const size=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};
+  const init=()=>{fl=Array.from({length:innerWidth<600?35:70},()=>({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*2.6,s:.4+Math.random()*1.1,d:Math.random()*6.28}))};
+  function frame(){
+    cx.clearRect(0,0,W,H);
+    cx.fillStyle=matchMedia("(prefers-color-scheme: dark)").matches?"rgba(255,255,255,.85)":"rgba(110,160,225,.85)";
+    fl.forEach(f=>{f.y+=f.s;f.x+=Math.sin(f.d+=.01)*.4;if(f.y>H+5){f.y=-5;f.x=Math.random()*W}cx.beginPath();cx.arc(f.x,f.y,f.r,0,6.283);cx.fill()});
+    raf=requestAnimationFrame(frame);
+  }
+  function apply(){
+    cancelAnimationFrame(raf);const go=on&&!reduce;
+    cv.classList.toggle("hidden",!go);$("snowb").setAttribute("aria-pressed",String(on));
+    if(go){size();init();frame()}else cx.clearRect(0,0,W,H);
+  }
+  $("snowb").onclick=()=>{on=!on;lsSet("absence:snow",on?"1":"0");apply()};
+  addEventListener("resize",()=>{if(on&&!reduce){size();init()}});
+  document.addEventListener("visibilitychange",()=>{cancelAnimationFrame(raf);if(!document.hidden&&on&&!reduce)frame()});
+  apply();
+})();
+
 /* ===== запуск ===== */
 $("date").value=workDate();
 schedule();
-let saved=null;try{saved=JSON.parse(lsGet("absence:current"))}catch(e){}
+const saved=savedLogin();
 if(saved&&saved.n)start(saved.n,saved.r);else{show();pull().then(fillWho)}
 fillWho();
 </script>
