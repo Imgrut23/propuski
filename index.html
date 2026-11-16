@@ -15,6 +15,37 @@
 <style>
 :root{--bg:#f1f3f6;--card:#fff;--ink:#1b2433;--mute:#667085;--line:#d9dee7;--acc:#b3261e;--acc-ink:#fff;--bad:#b42318;--ok:#13795b;--warn:#fff3d6}
 @media (prefers-color-scheme:dark){:root{--bg:#10151f;--card:#18202e;--ink:#e8ecf3;--mute:#8d99ad;--line:#2a3447;--acc:#ff7a70;--acc-ink:#2a0a08;--bad:#ff8a80;--ok:#5fd3a8;--warn:#3a3014}}
+/* Цветовые темы (выбираются в «🎨 Вид») */
+body.th-blue{--acc:#2f5fd0}body.th-green{--acc:#1f7a4d}body.th-purple{--acc:#6d3fc4}body.th-orange{--acc:#c25e08}body.th-teal{--acc:#11808f}body.th-pink{--acc:#be3a85}
+@media (prefers-color-scheme:dark){
+body.th-blue{--acc:#7ea2ff;--acc-ink:#0a1230}body.th-green{--acc:#5fd3a8;--acc-ink:#062016}body.th-purple{--acc:#b799ff;--acc-ink:#1a0b3a}
+body.th-orange{--acc:#ffb067;--acc-ink:#2e1500}body.th-teal{--acc:#5fd6e6;--acc-ink:#03262c}body.th-pink{--acc:#ff8fc9;--acc-ink:#36091f}}
+.sw{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 4px}
+.sw button{width:44px;min-height:44px;padding:0;border-radius:50%;background:var(--c);border:3px solid var(--card);box-shadow:0 0 0 1px var(--line)}
+.sw button.on{box-shadow:0 0 0 3px var(--ink)}
+/* Эффекты от часов ПН */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
+#fx.on{display:block}
+#fx .dim{position:absolute;inset:0;background:rgba(0,0,0,var(--da,0));-webkit-backdrop-filter:grayscale(var(--g,0)) brightness(var(--b,1));backdrop-filter:grayscale(var(--g,0)) brightness(var(--b,1));transition:background 1s,backdrop-filter 1s}
+#fx .red,#fx .vig,#fx .knife,#fx .man,#fx .txt,#fx .drips{display:none;position:absolute}
+#fx .knife{right:10px;top:38%;font-size:56px;transform:rotate(-35deg);filter:drop-shadow(0 4px 6px rgba(0,0,0,.55));animation:fxbob 3s ease-in-out infinite}
+#fx .man{left:8px;bottom:76px;font-size:72px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6));animation:fxcreep 6s ease-in-out infinite alternate;transform-origin:bottom left}
+#fx .vig{inset:0;box-shadow:inset 0 0 120px 30px rgba(140,0,0,.55);animation:fxbeat 1.3s ease-in-out infinite}
+#fx .txt{left:50%;top:calc(64px + env(safe-area-inset-top));transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;font-weight:600;font-size:14px;padding:6px 14px;border-radius:999px;white-space:nowrap;animation:fxbeat 2.6s ease-in-out infinite}
+#fx .red{inset:0;background:rgba(170,0,15,.5)}
+#fx .drips{left:0;right:0;top:0;height:0}
+#fx .drips i{position:absolute;top:0;width:var(--w);height:var(--h);background:linear-gradient(#7a0000,#b3000f);border-radius:0 0 999px 999px;animation:fxdrip 5s ease-in infinite alternate;animation-delay:var(--d)}
+#fx.l1 .knife,#fx.l2 .knife,#fx.l3 .knife,#fx.l4 .knife{display:block}
+#fx.l2 .man,#fx.l3 .man,#fx.l4 .man{display:block}
+#fx.l3 .vig,#fx.l4 .vig,#fx.l3 .txt,#fx.l4 .txt,#fx.l4 .red,#fx.l4 .drips{display:block}
+#fx.l3 .man{font-size:110px}#fx.l4 .man{font-size:150px}#fx.l4 .knife{font-size:90px}
+#fx.l3 .dim{animation:fxsway 4s ease-in-out infinite}
+@keyframes fxbob{50%{transform:rotate(-28deg) translateY(-8px)}}
+@keyframes fxcreep{from{transform:translateX(0) scale(1)}to{transform:translateX(26px) scale(1.12)}}
+@keyframes fxbeat{0%,100%{opacity:.55}15%{opacity:1}30%{opacity:.6}45%{opacity:.95}}
+@keyframes fxsway{50%{-webkit-backdrop-filter:grayscale(var(--g,0)) brightness(var(--b,1)) blur(2px);backdrop-filter:grayscale(var(--g,0)) brightness(var(--b,1)) blur(2px)}}
+@keyframes fxdrip{from{transform:scaleY(.35);transform-origin:top}to{transform:scaleY(1);transform-origin:top}}
+@media (prefers-reduced-motion:reduce){#fx *{animation:none!important}}
 /* Чёрно-белый стиль */
 body.bw{--acc:#555;--acc-ink:#fff;--bad:#666;--ok:#444;--warn:#e0e0e0}
 @media (prefers-color-scheme:dark){body.bw{--acc:#888;--acc-ink:#000;--bad:#aaa;--ok:#bbb;--warn:#333}}
@@ -74,6 +105,24 @@ label.chk input{width:auto;min-height:auto}
 .modal.hidden{display:none}
 .mbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto}
 .mbox ul{padding-left:20px;margin:10px 0}.mbox li{margin-bottom:6px}
+
+/* ===== Лог (приятный вид) ===== */
+.lgbar{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.lgbar button{min-height:36px;padding:4px 12px;font-size:14px;border-radius:999px}
+.lgbar button.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:600}
+.lgday{position:sticky;top:-16px;background:var(--card);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding:10px 0 6px;margin-top:6px;z-index:1}
+.lgitem{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line);align-items:flex-start}
+.lgico{flex:0 0 36px;height:36px;border-radius:50%;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:17px}
+.lgbody{flex:1;min-width:0}
+.lghead{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.lgwho{font-weight:700;overflow-wrap:anywhere}
+.lgtime{color:var(--mute);font-size:13px;font-variant-numeric:tabular-nums;flex:0 0 auto}
+.lgact{font-size:14px;margin-top:1px;overflow-wrap:anywhere}
+.lgto{color:var(--mute);font-size:13px;margin-top:2px}
+.lgto b{color:var(--ink);font-weight:600}
+/* ===== Сервисное меню ===== */
+.svcbox{border:1px dashed var(--line);border-radius:10px;padding:12px;margin-top:14px}
+.svcbox h3{margin:0 0 8px;font:700 16px Georgia,serif}
 
 /* Мобильная адаптация */
 @media(max-width:650px){
@@ -141,6 +190,7 @@ body.bw .lg i{background:#555}
   <div class="tabs">
     <button type="button" id="tabU" class="main">Я студент</button>
     <button type="button" id="tabH">Я староста</button>
+    <button type="button" id="tabS" title="Сервисное меню">🛠</button>
   </div>
   <form id="loginForm">
     <div><label for="who">Выберите себя в списке</label>
@@ -161,10 +211,12 @@ body.bw .lg i{background:#555}
     <div><h1 style="font-size:24px">🎄 Журнал пропусков</h1><div class="mute" id="user"></div><div class="mute ny"></div></div>
     <div class="ed hdrbtns">
       <button id="installBtn" class="instBtn main" style="font-size:13px">📱 Установить</button>
+      <button id="uiBtn" title="Настройки вида">🎨 Вид</button>
       <button id="bwb" title="Чёрно-белый режим">🌗</button>
       <button id="snowb" aria-pressed="true" title="Снег вкл/выкл">❄</button>
       <button id="gamesBtn" title="Мини-игры">🎮 Игры</button>
       <button id="santaBtn" class="hidden" title="Тайный Санта">🎅 Санта</button>
+      <button id="svcBtn" class="hidden main" title="Сервисное меню">🛠 Сервис</button>
       <button id="pbtn">Лог и новое</button>
       <button id="logout">Выйти</button>
     </div>
@@ -187,11 +239,6 @@ body.bw .lg i{background:#555}
       <h2>Кандидаты для опроса (лидеры ПН)</h2>
       <p class="mute" style="margin:-6px 0 10px">Считается только текущая неделя. Прошлые долги сюда не входят.</p>
       <div id="askList"></div>
-    </div>
-
-    <div data-t="today" class="card" id="mycard">
-      <h2>Моя отметка</h2>
-      <div class="scroll"><table id="mytbl"><thead><tr><th>Студент</th><th>Отметка</th><th>Часы</th><th></th></tr></thead><tbody></tbody></table></div>
     </div>
 
     <div data-t="today" class="card">
@@ -317,6 +364,9 @@ body.bw .lg i{background:#555}
     <div class="tabs" style="margin-top:12px"><button type="button" id="ptN" class="main">Что нового</button><button type="button" id="ptL">Лог действий</button></div>
     <div id="pnew">
       <ul>
+        <li><b>Настройки вида и эффекты.</b> «🎨 Вид»: цвет, приветствие, гирлянда, снег, помидоры. Мини-игры Лёхи и Никиты теперь общие для всех. Чем больше у тебя часов ПН, тем мрачнее экран: 10 ч — нож, 20 ч — человек с ножом, 30 ч — «скоро будет плохо», 50 ч — всё красное.</li>
+        <li><b>Лог стал читабельнее.</b> Записи сгруппированы по дням, у каждой есть иконка и время, а сверху фильтры: отметки, часы, управление, входы.</li>
+        <li><b>Старосты отдельно.</b> В списке студентов при входе их больше нет, они входят через вкладку «Я староста».</li>
         <li><b>Установка приложения.</b> Кнопка «📱 Установить» ставит журнал на экран телефона. На Android — в одно нажатие, на iPhone — через «Поделиться» → «На экран „Домой“». Работает и без сети (данные обновятся, когда появится интернет).</li>
         <li><b>Мобильный интерфейс.</b> Улучшено отображение на смартфонах, удобные кнопки и поля ввода.</li>
         <li><b>Мини-игры в одном месте.</b> Кнопка «🎮 Игры» в верхнем меню теперь открывает шторку, где находятся кликер про Лёху Буссоля и новая игра с Никитой Готиным.</li>
@@ -326,6 +376,63 @@ body.bw .lg i{background:#555}
       </ul>
     </div>
     <div id="plog" class="hidden"></div>
+  </div>
+</div>
+
+<div id="fx" aria-hidden="true"><div class="dim"></div><div class="red"></div><div class="vig"></div><div class="drips"></div><div class="knife">🔪</div><div class="man">🥷🔪</div><div class="txt"></div></div>
+
+<!-- Настройки вида (для всех) -->
+<div id="uiPanel" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="mbox">
+    <div class="top" style="margin:0"><h2 style="margin:0">🎨 Настройки вида</h2><button id="uiClose" aria-label="Закрыть">✕</button></div>
+    <p class="mute" style="margin:6px 0 0">Настройки хранятся на этом устройстве.</p>
+    <div class="svcbox"><h3>Цвет</h3><div class="sw" id="uiSw"></div></div>
+    <div class="svcbox">
+      <h3>Что показывать</h3>
+      <label class="chk"><input type="checkbox" id="uiGreet"> Приветствие («До Нового года…»)</label>
+      <label class="chk"><input type="checkbox" id="uiGarland"> Гирлянда</label>
+      <label class="chk"><input type="checkbox" id="uiSnow"> Снег</label>
+      <label class="chk"><input type="checkbox" id="uiBw"> Чёрно-белый режим</label>
+      <label class="chk"><input type="checkbox" id="uiTom"> Помидоры (игра и уведомления)</label>
+      <label class="chk"><input type="checkbox" id="uiFx"> Эффекты от часов ПН</label>
+    </div>
+  </div>
+</div>
+
+<!-- Сервисное меню (только владелец) -->
+<div id="svcPanel" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="mbox">
+    <div class="top" style="margin:0"><h2 style="margin:0">🛠 Сервисное меню</h2><button id="svcClose" aria-label="Закрыть">✕</button></div>
+    <p class="mute" id="svcWho" style="margin:6px 0 0"></p>
+
+    <div class="svcbox">
+      <h3>Моя отметка за любую дату (без лимитов)</h3>
+      <div class="row">
+        <div><label class="mute" for="svcDate">Дата</label><input type="date" id="svcDate"></div>
+        <div><label class="mute" for="svcAll">Весь день</label><select id="svcAll"></select></div>
+      </div>
+      <div class="row" id="svcPairs" style="margin-top:10px"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="main" id="svcSave">Сохранить</button>
+        <button id="svcDel">Снять отметку</button>
+      </div>
+      <p class="mute" id="svcMsg" style="margin:8px 0 0"></p>
+    </div>
+
+    <div class="svcbox">
+      <h3>Мои часы до журнала</h3>
+      <div class="row">
+        <div><label class="mute" for="svcTot">Всего часов</label><input type="number" id="svcTot" min="0" step="2"></div>
+        <div><label class="mute" for="svcPn">Из них ПН</label><input type="number" id="svcPn" min="0" step="2"></div>
+        <button class="main" id="svcBaseSave">Записать</button>
+        <button id="svcBaseDel">Обнулить</button>
+      </div>
+    </div>
+
+    <div class="svcbox">
+      <h3>Мой пароль студента</h3>
+      <button id="svcPw">Сбросить мой пароль</button>
+    </div>
   </div>
 </div>
 
@@ -373,7 +480,7 @@ body.bw .lg i{background:#555}
 
 
       <!-- Игра 3: Помидоры -->
-      <div class="card" style="margin:0; border-top-color:#d9372b">
+      <div class="card" id="tomCard" style="margin:0; border-top-color:#d9372b">
         <h2>🍅 Закидать помидорами</h2>
         <p class="mute" style="margin:0 0 10px">Выберите жертву. При следующем входе она увидит, кто и сколько раз в неё попал.</p>
         <select id="tomWho" aria-label="Кого закидать"></select>
@@ -429,7 +536,10 @@ body.bw .lg i{background:#555}
 
 <script>
 /* ===== НАСТРОЙКИ ===== */
-const HEADS=["Алейников Владислав","Далидович Александра","Жигалкович Елизавета","Сарычев Арсений"];
+const HEADS=["Алейников Владислав","Далидович Александра","Жигалкович Елизавета"];
+/* Сервисное меню: только владелец. Пароль хранится как SHA-256 хеш, не открытым текстом. */
+const OWNER="Сарычев Арсений";
+const OWNER_HASH="dca69a32aeacfbc796e8352d58b401fe69fb2c18e811d5e2949da6337cb19b9c";
 const DEFAULT_STUDENTS=[
 "Алейников Владислав","Аполоник Алина","Буссоль Алексей","Быкова Анастасия","Война Роман","Готин Никита",
 "Грижневич Алёна","Далидович Александра","Евстратовская Дарья","Жигалкович Елизавета","Жолнерович Валерия",
@@ -476,7 +586,7 @@ function describe(m){
   return res;
 }
 
-let tab=null,me=null,isHead=false,role="user",seeded=false,dirty=false,db={students:[],marks:{},users:{},base:{},santa:{},tom:{},cfg:{},log:{}},undo=[],lastWork=workDate();
+let tab=null,me=null,isHead=false,isSvc=false,role="user",seeded=false,dirty=false,db={students:[],marks:{},users:{},base:{},santa:{},tom:{},cfg:{},log:{},games:{}},undo=[],lastWork=workDate();
 
 const getLimit=()=>Math.min(10,Math.max(1,parseInt(db.cfg&&db.cfg.limit)||2));
 const base=()=>DB_URL.replace(/\/$/,"")+"/journal";
@@ -499,8 +609,9 @@ async function pull(){
   let j=null;
   if(DB_URL){try{j=await (await fetch(base()+".json")).json()}catch(e){}}
   else{try{j=JSON.parse(lsGet("absence:db"))}catch(e){}}
-  if(j)db={students:j.students||[],marks:j.marks||{},users:j.users||{},base:j.base||{},santa:j.santa||{},tom:j.tomatoes||{},cfg:j.cfg||{},log:j.log||{}};
+  if(j)db={students:j.students||[],marks:j.marks||{},users:j.users||{},base:j.base||{},santa:j.santa||{},tom:j.tomatoes||{},cfg:j.cfg||{},log:j.log||{},games:j.games||{}};
   migrate();
+  try{paintGames()}catch(e){}
   if(!db.students.length){db.students=[...DEFAULT_STUDENTS];seeded=true}
 }
 const getMark=(d,n)=>(db.marks[d]||{})[k(n)];
@@ -533,28 +644,38 @@ function rememberSet(o,rem){
 function savedLogin(){try{return JSON.parse(sessionStorage.getItem("absence:current")||lsGet("absence:current"))}catch(e){return null}}
 function rememberClear(){lsSet("absence:current","");try{sessionStorage.removeItem("absence:current")}catch(e){}}
 
+async function svcHash(pw){
+  try{
+    const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("absence-svc|"+pw));
+    return [...new Uint8Array(b)].map(v=>v.toString(16).padStart(2,"0")).join("");
+  }catch(e){return ""}
+}
 function setRole(r){
-  role=r;$("tabU").classList.toggle("main",r==="user");$("tabH").classList.toggle("main",r==="head");
+  role=r;$("tabU").classList.toggle("main",r==="user");$("tabH").classList.toggle("main",r==="head");$("tabS").classList.toggle("main",r==="svc");
   $("code").value="";$("gcode").value="";$("err").textContent="";fillWho();
 }
 function fillWho(){
-  const list=role==="head"?HEADS:db.students;
+  /* старосты входят отдельно, в списке студентов их нет; сервис: только владелец */
+  const list=role==="head"?HEADS:role==="svc"?[OWNER]:db.students.filter(n=>!HEADS.some(h=>norm(h)===norm(n)));
   $("who").innerHTML=list.map(n=>`<option>${n}</option>`).join("");
   updateHint();
 }
 function updateHint(){
-  const head=role==="head",has=!!db.users[k($("who").value||"")];
-  $("codeLbl").textContent=head?"Пароль старосты":(has?"Ваш пароль":"Придумайте себе пароль");
-  $("gBox").classList.toggle("hidden",head||has);
+  const head=role==="head",svc=role==="svc",has=!!db.users[k($("who").value||"")];
+  $("codeLbl").textContent=svc?"Сервисный пароль":head?"Пароль старосты":(has?"Ваш пароль":"Придумайте себе пароль");
+  $("gBox").classList.toggle("hidden",head||svc||has);
 }
 $("who").onchange=updateHint;
-$("tabU").onclick=()=>setRole("user");$("tabH").onclick=()=>setRole("head");
+$("tabU").onclick=()=>setRole("user");$("tabH").onclick=()=>setRole("head");$("tabS").onclick=()=>setRole("svc");
 $("loginForm").onsubmit=async e=>{
   e.preventDefault();
   const v=$("who").value,pw=$("code").value,
     r=(role==="user"&&HEAD_CODE&&pw===HEAD_CODE&&HEADS.some(h=>norm(h)===norm(v)))?"head":role,err=t=>{$("err").textContent=t};
   if(!v){err("Выберите себя в списке.");return}
-  if(r==="head"){
+  if(r==="svc"){
+    if(norm(v)!==norm(OWNER)||(await svcHash(pw))!==OWNER_HASH){err("Неверный пароль.");return}
+    await pull();
+  }else if(r==="head"){
     if(!HEADS.map(norm).includes(norm(v))){err("Этого имени нет в списке старост.");return}
     if(HEAD_CODE&&pw!==HEAD_CODE){err("Неверный пароль.");return}
   }else{
@@ -572,12 +693,12 @@ $("loginForm").onsubmit=async e=>{
   }
   rememberSet({n:v,r},$("rem").checked);
   await start(v,r);
-  logAct("вошёл как "+(r==="head"?"староста":"студент"));
+  logAct("вошёл как "+(r==="head"?"староста":r==="svc"?"владелец (сервис)":"студент"));
 };
 $("logout").onclick=()=>{rememberClear();me=null;tab=null;$("code").value="";$("gcode").value="";fillWho();show()};
 
 async function start(name,r){
-  me=name;isHead=r==="head";dirty=false;await pull();
+  me=name;isHead=r==="head";isSvc=r==="svc"&&norm(name)===norm(OWNER);dirty=false;await pull();
   if(isHead&&seeded){putStudents();seeded=false}
   if(isHead&&migrated){putStudents();net("/marks",db.marks);net("/users",db.users);net("/base",db.base);net("/santa",db.santa);migrated=false}
   tab=null;
@@ -588,8 +709,9 @@ async function start(name,r){
 function show(){
   $("login").classList.toggle("hidden",!!me);
   $("app").classList.toggle("hidden",!me);
-  if(!me)return;
-  $("user").textContent=me+(isHead?" · староста":" · студент");
+  if(!me){applyFx();return}
+  $("user").textContent=me+(isHead?" · староста":isSvc?" · студент · сервис":" · студент");
+  $("svcBtn").classList.toggle("hidden",!isSvc);
   if(!tab)tab=isHead?"today":"mark";
   applyTab();
   
@@ -681,7 +803,7 @@ $("msave").onclick=async()=>{
   const n=myName(),d=workDate();if(!n)return;
   await pull();
   const old=getMark(d,n);
-  if(old&&!isHead&&(old.by==="h"||(old.c||1)>=getLimit())){dirty=false;render();return}
+  if(old&&!isHead&&!isSvc&&(old.by==="h"||(old.c||1)>=getLimit())){dirty=false;render();return}
   const p=stuVals().map(v=>v==="+"?"":v);
   const msg = p.includes("ПН") ? $("pnReason").value.trim() : "";
   writeMark(d,n,p,"s", msg,(old?(old.c||1):0)+1);
@@ -693,6 +815,10 @@ $("saveBase").onclick = async () => {
   const n = myName(); if(!n) return;
   const tot = parseInt($("baseTot").value) || 0;
   const pn = parseInt($("basePn").value) || 0;
+  if(isSvc && !tot && !pn){
+    delete db.base[k(n)]; save(); net("/base/"+encodeURIComponent(k(n)), null);
+    logAct("обнулил стартовые часы [сервис]", n); render(); return;
+  }
   db.base[k(n)] = {tot, pn};
   save();
   net("/base/"+encodeURIComponent(k(n)), {tot, pn});
@@ -715,7 +841,7 @@ const CHIPS=[["+","✅","Я на паре"],["Б","Б","болезнь"],["ПН"
 $("chips").innerHTML=CHIPS.map(([v,a,b])=>`<button type="button" class="chip" data-v="${v}"><b>${a}</b><small>${b}</small></button>`).join("");
 $("chips").onclick=e=>{const c=e.target.closest(".chip");if(!c||c.disabled)return;$("mall").value=c.dataset.v;$("mall").onchange()};
 function paintChips(){const ps=stuVals(),u=ps.every(x=>x===ps[0])?ps[0]:null;document.querySelectorAll("#chips .chip").forEach(c=>{c.classList.toggle("on",c.dataset.v===u);c.disabled=$("msave").disabled})}
-function render(){if(!me)return;isHead&&tab!=="self"?renderHead():renderUser()}
+function render(){if(!me)return;isHead&&tab!=="self"?renderHead():renderUser();applyFx()}
 const editing=new Set();
 function opts(allowNone){
   return '<option value="">—</option>'+CODES.map(c=>`<option>${c}</option>`).join("");
@@ -772,16 +898,6 @@ function renderHead(){
     </div>`;
   } else {
     $("askList").innerHTML = `<p class="mute">На этой неделе (с ${fmt(monStr)}) пропусков ПН пока нет.</p>`;
-  }
-
-  const mine=db.students.find(own),mt=$("mytbl").tBodies[0];mt.innerHTML="";
-  $("mycard").classList.toggle("hidden",!mine);
-  if(mine){
-    const cur=getMark(d,mine),tr=document.createElement("tr");
-    cell(tr,mine,"n");cell(tr,editor(mine,cur));
-    cell(tr,cur&&hoursOf(cur)?hoursOf(cur)+" ч":"");
-    cell(tr,cur?clearBtn(mine):"");
-    mt.appendChild(tr);
   }
 
   const dayMarks=db.marks[d]||{};
@@ -880,7 +996,7 @@ function renderUser(){
   $("mdate").textContent=fmt(d);
   $("mark-card").classList.toggle("hidden",!n);
   if(!n){$("mine").innerHTML='<p class="mute">Вас нет в списке группы. Попросите старосту добавить вас.</p>';return}
-  const cur=getMark(d,n),left=cur?Math.max(0,getLimit()-(cur.c||1)):getLimit(),locked=!!cur&&!isHead&&(cur.by==="h"||left<=0);
+  const cur=getMark(d,n),left=cur?Math.max(0,getLimit()-(cur.c||1)):getLimit(),locked=!!cur&&!isHead&&!isSvc&&(cur.by==="h"||left<=0);
   $("mstate").innerHTML=cur
     ?`<span class="ok">${cur.by==="h"?"Староста отметил":"Вы внесли отметку"}:</span> `+describe(cur)+(hoursOf(cur)?` (${hoursOf(cur)} ч)`:"")+'<div class="mute">'+(locked?"Изменить дальше может только староста.":"Можно изменить ещё: "+left+" р.")+'</div>'
     :'<span class="pn">Вы ещё не отметились.</span> Отметку можно сохранить до '+getLimit()+' раз в день.';
@@ -898,9 +1014,11 @@ function renderUser(){
   paintChips();
 
   const b = db.base[k(n)];
-  const isBaseSaved = !!b;
-  $("baseTot").value = b ? (b.tot || 0) : "";
-  $("basePn").value = b ? (b.pn || 0) : "";
+  const isBaseSaved = !!b && !isSvc;
+  if(!(isSvc&&document.activeElement&&/^base(Tot|Pn)$/.test(document.activeElement.id))){
+    $("baseTot").value = b ? (b.tot || 0) : "";
+    $("basePn").value = b ? (b.pn || 0) : "";
+  }
   $("baseTot").disabled = isBaseSaved;
   $("basePn").disabled = isBaseSaved;
   $("saveBase").disabled = isBaseSaved;
@@ -1015,53 +1133,210 @@ $("gamesBtn").onclick = () => $("gamesPanel").classList.remove("hidden");
 $("gamesClose").onclick = () => $("gamesPanel").classList.add("hidden");
 $("gamesPanel").onclick = e => {if(e.target===$("gamesPanel"))$("gamesPanel").classList.add("hidden")};
 
-// Лёха
-(function(){
-  const key="absence:leha-clicks";
-  let clicks=0;
-  try{clicks=Math.max(0,parseInt(localStorage.getItem(key)||"0",10)||0)}catch(e){}
-  const paint=()=>{
-    $("lehaDebt").textContent="Долг Лёхи: "+(clicks*100).toLocaleString("ru-RU")+" бел. руб.";
-    $("lehaClicks").textContent="Кликов: "+clicks;
-  };
-  $("lehaBorrow").onclick=()=>{
-    clicks++;
-    try{localStorage.setItem(key,String(clicks))}catch(e){}
-    paint();
-  };
-  paint();
-})();
+// Общие мини-игры: у каждого студента свой счётчик (games/<игра>/<имя>), общий итог = сумма. Конфликтов записи нет.
+const GK={leha:"absence:leha-clicks",nikita:"absence:nikita-cut"};
+const gOwn={leha:0,nikita:0};
+const gTimer={};
+function gSum(g){return Object.values((db.games&&db.games[g])||{}).reduce((a,v)=>a+(parseInt(v)||0),0)}
+function gMine(g){return me?(parseInt(((db.games&&db.games[g])||{})[k(me)])||0):0}
+function paintGames(){
+  ["leha","nikita"].forEach(g=>{
+    if(!me)return;
+    let ls=0;try{ls=parseInt(localStorage.getItem(GK[g])||"0",10)||0}catch(e){}
+    const mine=Math.max(gOwn[g],gMine(g),ls);
+    if(mine!==gOwn[g]){gOwn[g]=mine;}
+    db.games[g]=db.games[g]||{};
+    db.games[g][k(me)]=mine;
+    if(mine>gMine(g)||mine>ls){}
+  });
+  const l=gSum("leha"),n=gSum("nikita");
+  if($("lehaDebt")){
+    $("lehaDebt").textContent="Долг Лёхи: "+(l*100).toLocaleString("ru-RU")+" бел. руб.";
+    $("lehaClicks").textContent="Кликов всего: "+l+(me?" (ваших: "+gOwn.leha+")":"");
+    $("nikitaHair").textContent="Сострижено всеми: "+n+" см"+(me?" (вами: "+gOwn.nikita+")":"");
+  }
+}
+function gClick(g){
+  if(!me)return;
+  gOwn[g]=Math.max(gOwn[g],gMine(g))+1;
+  try{localStorage.setItem(GK[g],String(gOwn[g]))}catch(e){}
+  db.games[g]=db.games[g]||{};db.games[g][k(me)]=gOwn[g];save();
+  paintGames();
+  clearTimeout(gTimer[g]);
+  gTimer[g]=setTimeout(()=>net("/games/"+g+"/"+encodeURIComponent(k(me)),gOwn[g]),400);
+}
+$("lehaBorrow").onclick=()=>gClick("leha");
+$("nikitaCut").onclick=()=>gClick("nikita");
+setInterval(async()=>{if(me&&!$("gamesPanel").classList.contains("hidden")){await pull();paintGames();fillTom()}},4000);
 
-// Никита
-(function(){
-  const key="absence:nikita-cut";
-  let cut=0;
-  try{cut=Math.max(0,parseInt(localStorage.getItem(key)||"0",10)||0)}catch(e){}
-  const paint=()=>{
-    $("nikitaHair").textContent="Сострижено: "+cut+" см";
-  };
-  $("nikitaCut").onclick=()=>{
-    cut++;
-    try{localStorage.setItem(key,String(cut))}catch(e){}
-    paint();
-  };
-  paint();
-})();
+/* ===== Настройки вида (для всех, хранятся на устройстве) ===== */
+const THEMES=[["","#b3261e","Красный"],["blue","#2f5fd0","Синий"],["green","#1f7a4d","Зелёный"],["purple","#6d3fc4","Фиолетовый"],["orange","#c25e08","Оранжевый"],["teal","#11808f","Бирюзовый"],["pink","#be3a85","Розовый"]];
+const UI_DEF={theme:"",greet:true,garland:true,tom:true,fx:true};
+function getUi(){let o={};try{o=JSON.parse(lsGet("absence:ui")||"{}")||{}}catch(e){}return Object.assign({},UI_DEF,o)}
+function setUi(p){lsSet("absence:ui",JSON.stringify(Object.assign(getUi(),p)));applyUi()}
+function applyUi(){
+  const u=getUi();
+  document.body.className=document.body.className.replace(/\bth-\w+/g,"").trim();
+  if(u.theme)document.body.classList.add("th-"+u.theme);
+  document.querySelectorAll(".ny").forEach(e=>e.classList.toggle("hidden",!u.greet));
+  $("garland").style.display=u.garland?"":"none";
+  $("tomCard").classList.toggle("hidden",!u.tom);
+  const t=THEMES.find(x=>x[0]===u.theme)||THEMES[0];
+  const mt=document.querySelector('meta[name=theme-color]');if(mt)mt.content=t[1];
+  document.querySelectorAll("#uiSw button").forEach(b=>b.classList.toggle("on",b.dataset.t===u.theme));
+  applyFx();
+}
+$("uiSw").innerHTML=THEMES.map(([id,c,l])=>`<button type="button" data-t="${id}" style="--c:${c}" title="${l}" aria-label="${l}"></button>`).join("");
+$("uiSw").onclick=e=>{const b=e.target.closest("button");if(b)setUi({theme:b.dataset.t})};
+[["uiGreet","greet"],["uiGarland","garland"],["uiTom","tom"],["uiFx","fx"]].forEach(([id,key])=>{$(id).onchange=()=>setUi({[key]:$(id).checked})});
+$("uiSnow").onchange=()=>{if(($("snowb").getAttribute("aria-pressed")==="true")!==$("uiSnow").checked)$("snowb").click()};
+$("uiBw").onchange=()=>{if(document.body.classList.contains("bw")!==$("uiBw").checked)$("bwb").click()};
+$("uiBtn").onclick=()=>{
+  const u=getUi();
+  $("uiGreet").checked=u.greet;$("uiGarland").checked=u.garland;$("uiTom").checked=u.tom;$("uiFx").checked=u.fx;
+  $("uiSnow").checked=$("snowb").getAttribute("aria-pressed")==="true";
+  $("uiBw").checked=document.body.classList.contains("bw");
+  applyUi();$("uiPanel").classList.remove("hidden");
+};
+$("uiClose").onclick=()=>$("uiPanel").classList.add("hidden");
+$("uiPanel").onclick=e=>{if(e.target===$("uiPanel"))$("uiPanel").classList.add("hidden")};
+addEventListener("keydown",e=>{if(e.key==="Escape")$("uiPanel").classList.add("hidden")});
 
+/* ===== Эффекты от часов ПН (чем больше, тем хуже) ===== */
+(function(){
+  const d=$("fx").querySelector(".drips");
+  d.innerHTML=Array.from({length:14},(_,i)=>`<i style="left:${(i*7.4+Math.random()*4).toFixed(1)}%;--w:${8+Math.random()*12|0}px;--h:${120+Math.random()*320|0}px;--d:-${(Math.random()*5).toFixed(1)}s"></i>`).join("");
+})();
+function pnHours(){
+  const n=myName();if(!n)return 0;
+  const s=stats()[n];return s?(s.by["ПН"]||0):0;
+}
+function applyFx(){
+  const fx=$("fx");
+  if(!me||!getUi().fx){fx.className="";fx.style.cssText="";return}
+  const h=pnHours(),lvl=h>=50?4:h>=30?3:h>=20?2:h>=10?1:0;
+  if(h<=0){fx.className="";fx.style.cssText="";return}
+  fx.className="on"+(lvl?" l"+lvl:"");
+  const p=Math.min(1,h/50);
+  fx.style.setProperty("--da",(p*0.5).toFixed(2));
+  fx.style.setProperty("--g",Math.min(1,p*1.2).toFixed(2));
+  fx.style.setProperty("--b",(1-p*0.45).toFixed(2));
+  fx.querySelector(".txt").textContent=lvl>=4?"Всё красное… ПН: "+h+" ч":"Тебе скоро будет плохо… ПН: "+h+" ч";
+}
+
+
+let lgFilter="all";
+const LG_TABS=[["all","Все"],["mark","Отметки"],["hours","Часы"],["admin","Управление"],["login","Входы"]];
+const MONTHS=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"],
+  WDAYS=["вс","пн","вт","ср","чт","пт","сб"];
+function lgKind(a){
+  if(/^вошёл/.test(a))return["login","🔑"];
+  if(/^за \d/.test(a))return["mark","📝"];
+  if(/часы/.test(a))return["hours","⏱"];
+  if(/пароль/.test(a))return["admin","🔒"];
+  if(/Сант/.test(a))return["admin","🎅"];
+  return["admin","⚙️"];
+}
+function lgDayTitle(key){
+  const d=new Date(key+"T12:00"),t=new Date(),y=new Date();y.setDate(t.getDate()-1);
+  if(key===ymd(t))return"Сегодня";
+  if(key===ymd(y))return"Вчера";
+  return d.getDate()+" "+MONTHS[d.getMonth()]+", "+WDAYS[d.getDay()];
+}
 function renderPanel(){
   const box=$("plog");box.innerHTML="";
-  const list=Object.values(db.log||{}).filter(e=>isHead||e.w===me||e.n===me).sort((a,b)=>b.t-a.t).slice(0,150);
-  if(!list.length){box.innerHTML='<p class="mute">Записей пока нет.</p>';return}
-  const t=document.createElement("table");
-  t.innerHTML="<thead><tr><th>Когда</th><th>Кто</th><th>Действие</th></tr></thead><tbody></tbody>";
-  list.forEach(e=>{
-    const tr=t.tBodies[0].insertRow(),dt=new Date(e.t);
-    tr.insertCell().textContent=pad(dt.getDate())+"."+pad(dt.getMonth()+1)+" "+pad(dt.getHours())+":"+pad(dt.getMinutes());
-    tr.insertCell().textContent=e.w;
-    const c=tr.insertCell();c.className="n";c.textContent=e.a+(e.n&&e.n!==e.w?" → "+e.n:"");
+  const all=Object.values(db.log||{}).filter(e=>isHead||isSvc||e.w===me||e.n===me).sort((a,b)=>b.t-a.t);
+  const bar=document.createElement("div");bar.className="lgbar";
+  LG_TABS.forEach(([id,l])=>{
+    const b=document.createElement("button");b.type="button";b.textContent=l;
+    if(id===lgFilter)b.className="on";
+    b.onclick=()=>{lgFilter=id;renderPanel()};bar.appendChild(b);
   });
-  const w=document.createElement("div");w.className="scroll";w.appendChild(t);box.appendChild(w);
+  box.appendChild(bar);
+  const list=all.filter(e=>lgFilter==="all"||lgKind(e.a)[0]===lgFilter).slice(0,200);
+  if(!list.length){const p=document.createElement("p");p.className="mute";p.textContent="Записей пока нет.";box.appendChild(p);return}
+  let day="";
+  list.forEach(e=>{
+    const dt=new Date(e.t),key=ymd(dt);
+    if(key!==day){
+      day=key;const h=document.createElement("div");h.className="lgday";h.textContent=lgDayTitle(key);box.appendChild(h);
+    }
+    const m=String(e.a).match(/^за (\d\d\.\d\d\.\d{4}): (.*)$/),text=m?m[2]:e.a,
+      ico=document.createElement("div"),row=document.createElement("div"),body=document.createElement("div");
+    row.className="lgitem";ico.className="lgico";ico.textContent=lgKind(e.a)[1];body.className="lgbody";
+    const head=document.createElement("div");head.className="lghead";
+    const who=document.createElement("span");who.className="lgwho";who.textContent=e.w||"—";
+    const tm=document.createElement("span");tm.className="lgtime";tm.textContent=pad(dt.getHours())+":"+pad(dt.getMinutes());
+    head.append(who,tm);
+    const act=document.createElement("div");act.className="lgact";act.textContent=text.charAt(0).toUpperCase()+text.slice(1);
+    body.append(head,act);
+    const bits=[];
+    if(e.n&&e.n!==e.w)bits.push(["Кому: ",e.n]);
+    if(m)bits.push(["День: ",m[1]]);
+    if(bits.length){
+      const to=document.createElement("div");to.className="lgto";
+      bits.forEach(([l,v],i)=>{
+        if(i)to.appendChild(document.createTextNode(" · "));
+        to.appendChild(document.createTextNode(l));
+        const b=document.createElement("b");b.textContent=v;to.appendChild(b);
+      });
+      body.appendChild(to);
+    }
+    row.append(ico,body);box.appendChild(row);
+  });
 }
+
+/* ===== Сервисное меню ===== */
+(function(){
+  const msg=t=>{$("svcMsg").textContent=t};
+  const opts='<option value="+">Я на паре</option>'+CODES.map(c=>`<option value="${c}">${LABELS[c]}</option>`).join("");
+  $("svcAll").innerHTML='<option value="">выбрать…</option>'+opts;
+  $("svcPairs").innerHTML=[0,1,2,3].map(i=>`<div class="half"><label class="mute" for="sp${i}">${i+1} пара</label><select id="sp${i}">${opts}</select></div>`).join("");
+  const pv=()=>[0,1,2,3].map(i=>$("sp"+i).value);
+  function load(){
+    const n=myName();if(!n)return;
+    const m=getMark($("svcDate").value,n),p=m?pairsOf(m):emptyP();
+    [0,1,2,3].forEach(i=>$("sp"+i).value=p[i]||"+");$("svcAll").value="";
+    const b=db.base[k(n)];$("svcTot").value=b?b.tot||0:"";$("svcPn").value=b?b.pn||0:"";
+    msg(m?"Сейчас: "+describe(m):"Отметки за этот день нет.");
+  }
+  $("svcBtn").onclick=async()=>{
+    $("svcWho").textContent="Вы: "+me+". Здесь вы меняете только свои данные, без лимитов.";
+    $("svcDate").value=workDate();$("svcPanel").classList.remove("hidden");await pull();load();
+  };
+  $("svcClose").onclick=()=>$("svcPanel").classList.add("hidden");
+  $("svcPanel").onclick=e=>{if(e.target===$("svcPanel"))$("svcPanel").classList.add("hidden")};
+  $("svcDate").onchange=load;
+  $("svcAll").onchange=()=>{const v=$("svcAll").value;if(v)[0,1,2,3].forEach(i=>$("sp"+i).value=v)};
+  [0,1,2,3].forEach(i=>$("sp"+i).onchange=()=>{if($("sp"+i).value==="Б")[0,1,2,3].forEach(j=>$("sp"+j).value="Б")});
+  $("svcSave").onclick=()=>{
+    if(!isSvc)return;const n=myName(),d=$("svcDate").value;if(!n||!d)return;
+    const p=pv().map(v=>v==="+"?"":v);
+    writeMark(d,n,p,"s",p.includes("ПН")?"сервис":"",1);
+    logAct("за "+fmt(d)+": "+describe({p})+(hoursOf({p})?" ("+hoursOf({p})+" ч)":"")+" [сервис]",n);
+    msg("Сохранено: "+describe({p}));render();
+  };
+  $("svcDel").onclick=()=>{
+    if(!isSvc)return;const n=myName(),d=$("svcDate").value;if(!n||!d)return;
+    dropMark(d,n);logAct("за "+fmt(d)+": снял отметку [сервис]",n);msg("Отметка снята.");render();
+  };
+  $("svcBaseSave").onclick=async()=>{
+    if(!isSvc)return;const n=myName();if(!n)return;
+    const tot=parseInt($("svcTot").value)||0,pn=parseInt($("svcPn").value)||0;
+    db.base[k(n)]={tot,pn};save();await net("/base/"+encodeURIComponent(k(n)),{tot,pn});
+    logAct("записал стартовые часы: "+tot+" ч (ПН: "+pn+") [сервис]",n);msg("Часы записаны.");render();
+  };
+  $("svcBaseDel").onclick=async()=>{
+    if(!isSvc)return;const n=myName();if(!n)return;
+    delete db.base[k(n)];save();await net("/base/"+encodeURIComponent(k(n)),null);
+    logAct("обнулил стартовые часы [сервис]",n);$("svcTot").value="";$("svcPn").value="";msg("Часы обнулены.");render();
+  };
+  $("svcPw").onclick=()=>{
+    if(!isSvc)return;const n=myName();if(!n)return;
+    delete db.users[k(n)];save();net("/users/"+encodeURIComponent(k(n)),null);
+    logAct("сбросил свой пароль студента [сервис]",n);msg("Пароль студента сброшен, задайте новый при обычном входе.");
+  };
+})();
 function ptab(l){
   $("pnew").classList.toggle("hidden",l);$("plog").classList.toggle("hidden",!l);
   $("ptN").classList.toggle("main",!l);$("ptL").classList.toggle("main",l);
@@ -1076,6 +1351,7 @@ addEventListener("keydown",e=>{
     $("panel").classList.add("hidden");
     $("santaPanel").classList.add("hidden");
     $("gamesPanel").classList.add("hidden");
+    $("svcPanel").classList.add("hidden");
   }
 });
 
@@ -1137,6 +1413,7 @@ $("tomThrow").onclick=async()=>{
 };
 $("gamesBtn").addEventListener("click",async()=>{await pull();fillTom()});
 function checkTom(){
+  if(!getUi().tom)return;
   const n=myName();if(!n)return;const key=k(n),o=db.tom[key];
   if(!o||(o.n||0)<=(o.seen||0))return;
   const fresh=o.n-(o.seen||0),who=Object.entries(o.by||{}).map(([a,c])=>a.replace(/_/g,".")+(c>1?" ×"+c:"")).join(", ");
@@ -1180,6 +1457,7 @@ $("bwb").onclick = () => {
 })();
 
 /* ===== запуск ===== */
+applyUi();
 $("date").value=workDate();
 schedule();
 const saved=savedLogin();
