@@ -23,6 +23,9 @@ body.th-orange{--acc:#ffb067;--acc-ink:#2e1500}body.th-teal{--acc:#5fd6e6;--acc-
 .sw{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 4px}
 .sw button{width:44px;min-height:44px;padding:0;border-radius:50%;background:var(--c);border:3px solid var(--card);box-shadow:0 0 0 1px var(--line)}
 .sw button.on{box-shadow:0 0 0 3px var(--ink)}
+/* Доп. темы */
+body.th-indigo{--acc:#4338ca}body.th-rose{--acc:#e11d48}body.th-lime{--acc:#4d7c0f}body.th-gold{--acc:#a16207}body.th-cyan{--acc:#0e7490}body.th-brown{--acc:#7c4a2d}body.th-slate{--acc:#475569}body.th-mint{--acc:#0f9d73}body.th-night{--bg:#0b0f17;--card:#141b29;--ink:#e8ecf3;--mute:#8d99ad;--line:#26314a;--acc:#7ea2ff;--acc-ink:#0a1230;--bad:#ff8a80;--ok:#5fd3a8;--warn:#3a3014}body.th-sepia{--bg:#f4ecd8;--card:#fbf5e6;--ink:#3b2f1e;--mute:#7a6a50;--line:#dccfae;--acc:#8a5a2b;--acc-ink:#fff;--bad:#a4301f;--ok:#4d7a2e;--warn:#f3e2b3}
+@media (prefers-color-scheme:dark){body.th-indigo{--acc:#a5b4fc;--acc-ink:#10123a}body.th-rose{--acc:#fda4af;--acc-ink:#3a0716}body.th-lime{--acc:#bef264;--acc-ink:#1a2a02}body.th-gold{--acc:#fcd34d;--acc-ink:#2e2100}body.th-cyan{--acc:#67e8f9;--acc-ink:#03242b}body.th-brown{--acc:#e0b08c;--acc-ink:#2a1608}body.th-slate{--acc:#cbd5e1;--acc-ink:#111827}body.th-mint{--acc:#6ee7b7;--acc-ink:#032a1d}body.th-sepia{--bg:#2a2216;--card:#352b1b;--ink:#f1e6cc;--mute:#b3a283;--line:#4d3f27;--acc:#e0b07a;--acc-ink:#2a1608;--warn:#4a3b16}}
 /* Эффекты от часов ПН */
 #fx{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
 #fx.on{display:block}
@@ -123,6 +126,17 @@ label.chk input{width:auto;min-height:auto}
 /* ===== Сервисное меню ===== */
 .svcbox{border:1px dashed var(--line);border-radius:10px;padding:12px;margin-top:14px}
 .svcbox h3{margin:0 0 8px;font:700 16px Georgia,serif}
+
+/* Просмотр эффектов (сервисное меню) */
+.fxlv{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 0}.fxlv button{flex:1 1 calc(33% - 8px);flex-direction:column;line-height:1.2;font-size:14px}.fxlv small{color:var(--mute);font-size:11px}
+#fxBar{position:fixed;left:8px;right:8px;top:calc(30px + env(safe-area-inset-top));z-index:140;max-width:460px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:0 6px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:6px}
+#fxBar.hidden{display:none}
+#fxBar .fxr{display:flex;gap:6px;align-items:center}
+#fxBar button{min-height:40px;padding:6px 10px}
+#fxBar input[type=range]{flex:1;min-width:0;min-height:40px;padding:0;border:0;background:none}
+#fxBar button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+#fxBar #fxBack{margin-left:auto}
+#fxLbl{font-size:13px}
 
 /* Мобильная адаптация */
 @media(max-width:650px){
@@ -390,6 +404,13 @@ body.bw .lg i{background:#555}
 
 <div id="fx" aria-hidden="true"><div class="dim"></div><div class="red"></div><div class="vig"></div><div class="drips"></div><div class="knife">🔪</div><div class="man">🥷🔪</div><div class="txt"></div></div>
 
+<!-- Панель просмотра эффектов (открывается из сервисного меню) -->
+<div id="fxBar" class="hidden" role="toolbar" aria-label="Просмотр эффектов">
+  <div class="fxr"><button id="fxPrev" type="button" aria-label="Уровень ниже">◀</button><input type="range" id="fxRng" min="0" max="60" step="1" aria-label="Часы ПН"><button id="fxNext" type="button" aria-label="Уровень выше">▶</button></div>
+  <div class="fxr"><span id="fxLbl" class="mute"></span></div>
+  <div class="fxr"><button id="fxbSnow" type="button" title="Снег" aria-pressed="false">❄</button><button id="fxbGar" type="button" title="Гирлянда" aria-pressed="false">💡</button><button id="fxbBw" type="button" title="Чёрно-белый режим" aria-pressed="false">🌗</button><button id="fxbTom" type="button" title="Помидоры">🍅</button><button id="fxBack" class="main" type="button">← В меню</button></div>
+</div>
+
 <!-- Настройки вида (для всех) -->
 <div id="uiPanel" class="modal hidden" role="dialog" aria-modal="true">
   <div class="mbox">
@@ -404,6 +425,7 @@ body.bw .lg i{background:#555}
       <label class="chk"><input type="checkbox" id="uiBw"> Чёрно-белый режим</label>
       <label class="chk"><input type="checkbox" id="uiTom"> Помидоры (игра и уведомления)</label>
       <label class="chk"><input type="checkbox" id="uiFx"> Эффекты от часов ПН</label>
+      <label class="chk"><input type="checkbox" id="uiFx10"> Эффекты только первые 10 секунд после входа</label>
     </div>
   </div>
 </div>
@@ -435,6 +457,21 @@ body.bw .lg i{background:#555}
         <div><label class="mute" for="svcPn">Из них ПН</label><input type="number" id="svcPn" min="0" step="2"></div>
         <button class="main" id="svcBaseSave">Записать</button>
         <button id="svcBaseDel">Обнулить</button>
+      </div>
+    </div>
+
+    <div class="svcbox">
+      <h3>🎬 Просмотр эффектов</h3>
+      <p class="mute" style="margin:0">Только на этом экране, ничего не сохраняется и другим не видно.</p>
+      <p class="mute" id="fxReal" style="margin:4px 0 0"></p>
+      <div class="mute" style="margin-top:10px">Эффекты от часов ПН (меню скроется, внизу появится панель)</div>
+      <div class="fxlv" id="fxLv"></div>
+      <div class="mute" style="margin-top:12px">Оформление</div>
+      <div class="row" style="margin-top:6px"><button id="fxDeco" type="button">🎄 Снег, гирлянда, Ч/Б…</button></div>
+      <div class="mute" style="margin-top:12px">Помидоры</div>
+      <div class="row" style="margin-top:6px">
+        <button id="fxTom" type="button">🍅 Дождь помидоров</button>
+        <button id="fxTomWin" type="button">🔔 Окно «В вас попали»</button>
       </div>
     </div>
 
@@ -712,7 +749,7 @@ async function start(name,r){
   if(isHead&&migrated){putStudents();net("/marks",db.marks);net("/users",db.users);net("/base",db.base);net("/santa",db.santa);migrated=false}
   tab=null;
   if(isHead){const lim=Date.now()-60*864e5;Object.keys(db.log).forEach(x=>{if(db.log[x].t<lim){delete db.log[x];net("/log/"+x,null)}})}
-  $("date").value=workDate();lastWork=workDate();show();checkTom();
+  $("date").value=workDate();lastWork=workDate();show();checkTom();fxRestart();
 }
 
 function show(){
@@ -1179,8 +1216,8 @@ $("nikitaCut").onclick=()=>gClick("nikita");
 setInterval(async()=>{if(me&&!$("gamesPanel").classList.contains("hidden")){await pull();paintGames();fillTom()}},4000);
 
 /* ===== Настройки вида (для всех, хранятся на устройстве) ===== */
-const THEMES=[["","#b3261e","Красный"],["blue","#2f5fd0","Синий"],["green","#1f7a4d","Зелёный"],["purple","#6d3fc4","Фиолетовый"],["orange","#c25e08","Оранжевый"],["teal","#11808f","Бирюзовый"],["pink","#be3a85","Розовый"]];
-const UI_DEF={theme:"",greet:true,garland:true,tom:true,fx:true};
+const THEMES=[["","#b3261e","Красный"],["blue","#2f5fd0","Синий"],["green","#1f7a4d","Зелёный"],["purple","#6d3fc4","Фиолетовый"],["orange","#c25e08","Оранжевый"],["teal","#11808f","Бирюзовый"],["pink","#be3a85","Розовый"],["indigo","#4338ca","Индиго"],["rose","#e11d48","Малиновый"],["lime","#4d7c0f","Лаймовый"],["gold","#a16207","Золотой"],["cyan","#0e7490","Циан"],["brown","#7c4a2d","Шоколад"],["slate","#475569","Графит"],["mint","#0f9d73","Мятный"],["night","#141b29","Ночь"],["sepia","#8a5a2b","Сепия"]];
+const UI_DEF={theme:"",greet:true,garland:true,tom:true,fx:true,fx10:true};
 function getUi(){let o={};try{o=JSON.parse(lsGet("absence:ui")||"{}")||{}}catch(e){}return Object.assign({},UI_DEF,o)}
 function setUi(p){lsSet("absence:ui",JSON.stringify(Object.assign(getUi(),p)));applyUi()}
 function applyUi(){
@@ -1197,12 +1234,12 @@ function applyUi(){
 }
 $("uiSw").innerHTML=THEMES.map(([id,c,l])=>`<button type="button" data-t="${id}" style="--c:${c}" title="${l}" aria-label="${l}"></button>`).join("");
 $("uiSw").onclick=e=>{const b=e.target.closest("button");if(b)setUi({theme:b.dataset.t})};
-[["uiGreet","greet"],["uiGarland","garland"],["uiTom","tom"],["uiFx","fx"]].forEach(([id,key])=>{$(id).onchange=()=>setUi({[key]:$(id).checked})});
+[["uiGreet","greet"],["uiGarland","garland"],["uiTom","tom"],["uiFx","fx"],["uiFx10","fx10"]].forEach(([id,key])=>{$(id).onchange=()=>{setUi({[key]:$(id).checked});if(key==="fx"||key==="fx10")fxRestart()}});
 $("uiSnow").onchange=()=>{if(($("snowb").getAttribute("aria-pressed")==="true")!==$("uiSnow").checked)$("snowb").click()};
 $("uiBw").onchange=()=>{if(document.body.classList.contains("bw")!==$("uiBw").checked)$("bwb").click()};
 $("uiBtn").onclick=()=>{
   const u=getUi();
-  $("uiGreet").checked=u.greet;$("uiGarland").checked=u.garland;$("uiTom").checked=u.tom;$("uiFx").checked=u.fx;
+  $("uiGreet").checked=u.greet;$("uiGarland").checked=u.garland;$("uiTom").checked=u.tom;$("uiFx").checked=u.fx;$("uiFx10").checked=u.fx10;
   $("uiSnow").checked=$("snowb").getAttribute("aria-pressed")==="true";
   $("uiBw").checked=document.body.classList.contains("bw");
   applyUi();$("uiPanel").classList.remove("hidden");
@@ -1216,14 +1253,24 @@ addEventListener("keydown",e=>{if(e.key==="Escape")$("uiPanel").classList.add("h
   const d=$("fx").querySelector(".drips");
   d.innerHTML=Array.from({length:14},(_,i)=>`<i style="left:${(i*7.4+Math.random()*4).toFixed(1)}%;--w:${8+Math.random()*12|0}px;--h:${120+Math.random()*320|0}px;--d:-${(Math.random()*5).toFixed(1)}s"></i>`).join("");
 })();
+let fxPreview=null; /* null — обычный режим; число — просмотр эффектов с этим числом часов ПН */
+const FX_LV=[0,10,20,30,50];
+const fxLvl=h=>h>=50?4:h>=30?3:h>=20?2:h>=10?1:0;
 function pnHours(){
   const n=myName();if(!n)return 0;
   const s=stats()[n];return s?(s.by["ПН"]||0):0;
 }
+let fxExpired=false,fxTimer=0;
+function fxRestart(){
+  clearTimeout(fxTimer);fxExpired=false;
+  if(getUi().fx10)fxTimer=setTimeout(()=>{fxExpired=true;applyFx()},10000);
+  applyFx();
+}
 function applyFx(){
   const fx=$("fx");
-  if(!me||!getUi().fx){fx.className="";fx.style.cssText="";return}
-  const h=pnHours(),lvl=h>=50?4:h>=30?3:h>=20?2:h>=10?1:0;
+  const pv=fxPreview!==null;
+  if(!pv&&(!me||!getUi().fx||(getUi().fx10&&fxExpired))){fx.className="";fx.style.cssText="";return}
+  const h=pv?fxPreview:pnHours(),lvl=fxLvl(h);
   if(h<=0){fx.className="";fx.style.cssText="";return}
   fx.className="on"+(lvl?" l"+lvl:"");
   const p=Math.min(1,h/50);
@@ -1345,6 +1392,50 @@ function renderPanel(){
     delete db.users[k(n)];save();net("/users/"+encodeURIComponent(k(n)),null);
     logAct("сбросил свой пароль студента [сервис]",n);msg("Пароль студента сброшен, задайте новый при обычном входе.");
   };
+})();
+/* ===== Просмотр эффектов (сервисное меню) ===== */
+(function(){
+  const bar=$("fxBar");let saved=null;
+  const snowOn=()=>$("snowb").getAttribute("aria-pressed")==="true";
+  $("fxLv").innerHTML=FX_LV.map((h,i)=>`<button type="button" data-h="${h}">${h} ч<small>${i?"уровень "+i:"нет эффектов"}</small></button>`).join("");
+  function paint(){
+    const h=fxPreview||0,l=fxLvl(h);
+    $("fxRng").value=h;
+    $("fxLbl").textContent="ПН: "+h+" ч · "+(l?"уровень "+l+" из 4":"без эффектов ПН");
+    $("fxbSnow").setAttribute("aria-pressed",String(snowOn()));
+    $("fxbGar").setAttribute("aria-pressed",String($("garland").style.display!=="none"));
+    $("fxbBw").setAttribute("aria-pressed",String(document.body.classList.contains("bw")));
+    applyFx();
+  }
+  function open(h){
+    if(!saved)saved={snow:snowOn()};
+    fxPreview=h;
+    $("svcPanel").classList.add("hidden");bar.classList.remove("hidden");paint();
+  }
+  function close(){
+    bar.classList.add("hidden");
+    if(saved){if(snowOn()!==saved.snow)$("snowb").click();saved=null}
+    document.body.classList.toggle("bw",bwMode);
+    fxPreview=null;applyUi();
+    if(isSvc)$("svcPanel").classList.remove("hidden");
+  }
+  $("fxLv").onclick=e=>{const b=e.target.closest("button");if(b)open(+b.dataset.h)};
+  $("fxDeco").onclick=()=>open(0);
+  $("fxTom").onclick=()=>fall(12);
+  $("fxTomWin").onclick=()=>{
+    $("tomText").innerHTML='Новых попаданий: <b>3</b> 🍅<br>Всего: 7<br><span class="mute">Это просмотр, настоящих попаданий нет.</span>';
+    $("tomPanel").classList.remove("hidden");fall();
+  };
+  $("fxPrev").onclick=()=>{const h=fxPreview||0,v=[...FX_LV].reverse().find(x=>x<h);fxPreview=v===undefined?0:v;paint()};
+  $("fxNext").onclick=()=>{const h=fxPreview||0,v=FX_LV.find(x=>x>h);fxPreview=v===undefined?h:v;paint()};
+  $("fxRng").oninput=()=>{fxPreview=+$("fxRng").value;paint()};
+  $("fxbSnow").onclick=()=>{$("snowb").click();paint()};
+  $("fxbGar").onclick=()=>{const g=$("garland");g.style.display=g.style.display==="none"?"":"none";paint()};
+  $("fxbBw").onclick=()=>{document.body.classList.toggle("bw");paint()};
+  $("fxbTom").onclick=()=>fall(8);
+  $("fxBack").onclick=close;
+  $("svcBtn").addEventListener("click",()=>{$("fxReal").textContent="Ваши часы ПН сейчас: "+pnHours()+" ч"});
+  addEventListener("keydown",e=>{if(e.key==="Escape"&&!bar.classList.contains("hidden"))close()});
 })();
 function ptab(l){
   $("pnew").classList.toggle("hidden",l);$("plog").classList.toggle("hidden",!l);
