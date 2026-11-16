@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b3261e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Пропуски">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Журнал пропусков</title>
 <style>
 :root{--bg:#f1f3f6;--card:#fff;--ink:#1b2433;--mute:#667085;--line:#d9dee7;--acc:#b3261e;--acc-ink:#fff;--bad:#b42318;--ok:#13795b;--warn:#fff3d6}
@@ -146,13 +153,14 @@ body.bw .lg i{background:#555}
     <div class="err" id="err"></div>
     <button class="main" style="width:100%">Войти</button>
   </form>
+  <button type="button" class="instBtn" style="width:100%;margin-top:10px">📱 Установить приложение</button>
 </section>
 
 <main id="app" class="wrap hidden">
   <div class="top">
     <div><h1 style="font-size:24px">🎄 Журнал пропусков</h1><div class="mute" id="user"></div><div class="mute ny"></div></div>
     <div class="ed hdrbtns">
-      <button id="installBtn" class="hidden main" style="font-size:13px">📱 Установить</button>
+      <button id="installBtn" class="instBtn main" style="font-size:13px">📱 Установить</button>
       <button id="bwb" title="Чёрно-белый режим">🌗</button>
       <button id="snowb" aria-pressed="true" title="Снег вкл/выкл">❄</button>
       <button id="gamesBtn" title="Мини-игры">🎮 Игры</button>
@@ -309,6 +317,7 @@ body.bw .lg i{background:#555}
     <div class="tabs" style="margin-top:12px"><button type="button" id="ptN" class="main">Что нового</button><button type="button" id="ptL">Лог действий</button></div>
     <div id="pnew">
       <ul>
+        <li><b>Установка приложения.</b> Кнопка «📱 Установить» ставит журнал на экран телефона. На Android — в одно нажатие, на iPhone — через «Поделиться» → «На экран „Домой“». Работает и без сети (данные обновятся, когда появится интернет).</li>
         <li><b>Мобильный интерфейс.</b> Улучшено отображение на смартфонах, удобные кнопки и поля ввода.</li>
         <li><b>Мини-игры в одном месте.</b> Кнопка «🎮 Игры» в верхнем меню теперь открывает шторку, где находятся кликер про Лёху Буссоля и новая игра с Никитой Готиным.</li>
         <li><b>Тайный Санта.</b> Старосты могут запустить Санту заранее. Студенты увидят кнопку Санты только с 22 декабря.</li>
@@ -383,6 +392,38 @@ body.bw .lg i{background:#555}
     <h2 id="tomTitle">В вас кинули помидоры!</h2>
     <p id="tomText" style="margin:10px 0 16px"></p>
     <button class="main" id="tomOk" type="button" style="width:100%">Вытереться и жить дальше</button>
+  </div>
+</div>
+
+<div id="instPanel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="instTitle">
+  <div class="mbox">
+    <h2 id="instTitle">📱 Установить приложение</h2>
+    <div id="instIos" class="hidden">
+      <p>На iPhone приложение ставится через Safari:</p>
+      <ol>
+        <li>Откройте эту страницу в <b>Safari</b> (не во встроенном браузере Telegram, Instagram и т.п.).</li>
+        <li>Нажмите кнопку <b>«Поделиться»</b> (квадрат со стрелкой вверх) внизу экрана.</li>
+        <li>Прокрутите список и выберите <b>«На экран „Домой“»</b>.</li>
+        <li>Нажмите <b>«Добавить»</b>. Иконка появится на главном экране.</li>
+      </ol>
+      <button type="button" id="instShare" class="main" style="width:100%">⬆️ Открыть «Поделиться»</button>
+      <p class="mute" style="margin:8px 0 0">Кнопка сразу открывает меню «Поделиться». Остаётся выбрать «На экран „Домой“».</p>
+    </div>
+    <div id="instAnd" class="hidden">
+      <p>На Android приложение ставится через Chrome:</p>
+      <ol>
+        <li>Откройте эту страницу в <b>Chrome</b>.</li>
+        <li>Нажмите меню <b>⋮</b> в правом верхнем углу.</li>
+        <li>Выберите <b>«Установить приложение»</b> (или «Добавить на главный экран»).</li>
+        <li>Подтвердите установку.</li>
+      </ol>
+      <button type="button" id="instChrome" class="main hidden" style="width:100%">Открыть в Chrome</button>
+      <p class="mute" style="margin:8px 0 0">Если установка не предлагается, один раз обновите страницу и нажмите «Установить» снова.</p>
+    </div>
+    <div id="instOther" class="hidden">
+      <p>Откройте эту страницу на телефоне: в <b>Safari</b> на iPhone или в <b>Chrome</b> на Android — и нажмите «Установить» снова.</p>
+    </div>
+    <div class="row" style="margin-top:12px"><button type="button" id="instOk" class="main">Понятно</button></div>
   </div>
 </div>
 
@@ -1040,19 +1081,40 @@ addEventListener("keydown",e=>{
 
 /* ===== Установка приложения (PWA) ===== */
 let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  $("installBtn").classList.remove("hidden");
-});
-$("installBtn").onclick = async () => {
-  if (deferredPrompt) {
+const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const isAndroid=/android/i.test(navigator.userAgent);
+const instBtns=document.querySelectorAll(".instBtn");
+function syncInst(){instBtns.forEach(b=>b.classList.toggle("hidden",isStandalone()))}
+syncInst();
+matchMedia("(display-mode: standalone)").addEventListener?.("change",syncInst);
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e});
+window.addEventListener("appinstalled",()=>{deferredPrompt=null;instBtns.forEach(b=>b.classList.add("hidden"))});
+function showInst(){
+  $("instIos").classList.toggle("hidden",!isIOS);
+  $("instAnd").classList.toggle("hidden",isIOS||!isAndroid);
+  $("instOther").classList.toggle("hidden",isIOS||isAndroid);
+  $("instPanel").classList.remove("hidden");
+}
+instBtns.forEach(b=>b.onclick=async()=>{
+  if(deferredPrompt){
     deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') $("installBtn").classList.add("hidden");
-    deferredPrompt = null;
-  }
+    const {outcome}=await deferredPrompt.userChoice;
+    deferredPrompt=null;
+    if(outcome==="accepted")instBtns.forEach(x=>x.classList.add("hidden"));
+  }else showInst();
+});
+$("instShare").onclick=()=>{
+  const u=location.href.split("#")[0];
+  if(navigator.share)navigator.share({title:document.title,url:u}).catch(()=>{});
+  else if(navigator.clipboard)navigator.clipboard.writeText(u).then(()=>alert("Ссылка скопирована. Откройте её в Safari."));
 };
+const isChrome=/chrome/i.test(navigator.userAgent)&&!/edga|opr|samsungbrowser|firefox|; wv\)|fban|fbav|instagram/i.test(navigator.userAgent);
+$("instChrome").classList.toggle("hidden",isChrome);
+$("instChrome").onclick=()=>{location.href="intent://"+location.host+location.pathname+location.search+"#Intent;scheme=https;package=com.android.chrome;end"};
+$("instOk").onclick=()=>$("instPanel").classList.add("hidden");
+$("instPanel").onclick=e=>{if(e.target===$("instPanel"))$("instPanel").classList.add("hidden")};
+if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
 
 /* ===== Помидоры ===== */
 function fall(n=10){
