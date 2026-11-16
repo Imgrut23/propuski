@@ -7,6 +7,11 @@
 <style>
 :root{--bg:#f1f3f6;--card:#fff;--ink:#1b2433;--mute:#667085;--line:#d9dee7;--acc:#b3261e;--acc-ink:#fff;--bad:#b42318;--ok:#13795b;--warn:#fff3d6}
 @media (prefers-color-scheme:dark){:root{--bg:#10151f;--card:#18202e;--ink:#e8ecf3;--mute:#8d99ad;--line:#2a3447;--acc:#ff7a70;--acc-ink:#2a0a08;--bad:#ff8a80;--ok:#5fd3a8;--warn:#3a3014}}
+/* Чёрно-белый стиль */
+body.bw{--acc:#555;--acc-ink:#fff;--bad:#666;--ok:#444;--warn:#e0e0e0}
+@media (prefers-color-scheme:dark){body.bw{--acc:#888;--acc-ink:#000;--bad:#aaa;--ok:#bbb;--warn:#333}}
+body.bw #garland, body.bw #snow { filter: grayscale(100%) }
+
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:700;margin:0}
@@ -47,17 +52,15 @@ summary{cursor:pointer;font-weight:600}
 .urow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
 label.chk{display:flex;align-items:center;gap:8px}
 label.chk input{width:auto}
-#garland{position:fixed;top:0;left:0;right:0;height:24px;pointer-events:none;z-index:50;
+#garland{position:absolute;top:0;left:0;right:0;height:24px;pointer-events:none;z-index:50;
  background:
   radial-gradient(circle at 10px 15px,#ff4d4d 5px,transparent 6px) 0 0/120px 24px repeat-x,
   radial-gradient(circle at 40px 15px,#ffd84d 5px,transparent 6px) 0 0/120px 24px repeat-x,
   radial-gradient(circle at 70px 15px,#4dd964 5px,transparent 6px) 0 0/120px 24px repeat-x,
   radial-gradient(circle at 100px 15px,#4da6ff 5px,transparent 6px) 0 0/120px 24px repeat-x,
   linear-gradient(#2e7d32,#2e7d32) 0 4px/100% 2px no-repeat;
- animation:tw 1.8s ease-in-out infinite alternate}
-@keyframes tw{from{opacity:.5}to{opacity:1}}
+}
 #snow{position:fixed;inset:0;pointer-events:none;z-index:40}
-@media (prefers-reduced-motion:reduce){#garland{animation:none}}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:6vh 12px;overflow:auto}
 .modal.hidden{display:none}
 .mbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;max-width:600px;width:100%}
@@ -91,7 +94,15 @@ label.chk input{width:auto}
 <main id="app" class="wrap hidden">
   <div class="top">
     <div><h1 style="font-size:26px">🎄 Журнал пропусков</h1><div class="mute" id="user"></div><div class="mute ny"></div></div>
-    <div class="ed"><button id="snowb" aria-pressed="true" title="Снег вкл/выкл">❄</button><button id="pbtn">Лог и новое</button><button id="logout">Выйти</button></div>
+    <div class="ed">
+      <button id="installBtn" class="hidden main" style="padding:4px 8px;font-size:13px">📱 Установить</button>
+      <button id="bwb" title="Чёрно-белый режим">🌗</button>
+      <button id="snowb" aria-pressed="true" title="Снег вкл/выкл">❄</button>
+      <button id="gamesBtn" title="Мини-игры">🎮 Игры</button>
+      <button id="santaBtn" class="hidden" title="Тайный Санта">🎅 Санта</button>
+      <button id="pbtn">Лог и новое</button>
+      <button id="logout">Выйти</button>
+    </div>
   </div>
 
   <!-- Староста -->
@@ -99,9 +110,17 @@ label.chk input{width:auto}
     <div class="card">
       <div class="row">
         <div><label class="mute" for="date">Дата</label><input type="date" id="date"></div>
-        <button id="undo">Отменить действие</button>
+        <button id="btnToday">Сегодня</button>
+        <button id="undo" style="margin-left:auto">Отменить действие</button>
       </div>
       <p class="mute" style="margin:10px 0 0">В день 4 пары. Болезнь (Б) засчитывается на весь день, остальные причины отмечаются по парам. Журнал переходит на новый день в 20:00.</p>
+    </div>
+
+    <!-- Кандидаты для опроса (Лидеры ПН) -->
+    <div class="card" id="askCard">
+      <h2>Кандидаты для опроса (лидеры ПН)</h2>
+      <p class="mute" style="margin:-6px 0 10px">Считается только текущая неделя. Прошлые долги сюда не входят.</p>
+      <div id="askList"></div>
     </div>
 
     <div class="card" id="mycard">
@@ -111,33 +130,66 @@ label.chk input{width:auto}
 
     <div class="card">
       <h2>Кто отметился</h2>
+      <p class="mute" style="margin:-6px 0 10px">Здесь отображаются все, у кого есть пропуски (или отметка «Н»). Списки отсортированы по имени.</p>
+      
+      <!-- Отсутствующие -->
       <div class="scroll"><table id="tbl"><thead><tr><th>Студент</th><th>Отметка</th><th>Часы</th><th>Кто</th><th></th></tr></thead><tbody></tbody></table></div>
       <p id="empty" class="mute hidden">Пока никто не отметился.</p>
+      
+      <!-- Присутствующие (шторка) -->
+      <details id="presDet" style="margin:12px 0 0; background:var(--bg); border:1px solid var(--line); border-radius:8px">
+        <summary id="presS" style="padding:10px 12px"></summary>
+        <div class="scroll" style="padding:0 12px 12px">
+          <table id="presTbl"><thead><tr><th>Студент</th><th>Отметка</th><th>Кто</th><th></th></tr></thead><tbody></tbody></table>
+        </div>
+      </details>
+
+      <!-- Не отметились (шторка) -->
       <details id="unm" class="warn" style="margin:12px 0 0"><summary id="unmS"></summary><div id="unmL" style="margin-top:8px"></div></details>
     </div>
 
     <div class="card">
-      <h2>Статистика пропусков (часы)</h2>
-      <div class="row" style="margin-bottom:10px">
-        <div><label class="mute" for="from">С даты</label><input type="date" id="from"></div>
-        <div><label class="mute" for="to">По дату</label><input type="date" id="to"></div>
-      </div>
-      <div class="scroll"><table id="stat"></table></div>
+      <details open>
+        <summary><h2 style="display:inline;margin:0">Статистика пропусков (часы)</h2></summary>
+        <div class="row" style="margin:10px 0">
+          <div><label class="mute" for="from">С даты</label><input type="date" id="from"></div>
+          <div><label class="mute" for="to">По дату</label><input type="date" id="to"></div>
+          <div>
+            <label class="mute" for="sortStat">Сортировка</label>
+            <select id="sortStat">
+              <option value="name">По алфавиту</option>
+              <option value="hours">По часам (по убыванию)</option>
+            </select>
+          </div>
+        </div>
+        <div class="scroll"><table id="stat"></table></div>
+      </details>
     </div>
 
     <div class="card">
-      <h2>Список группы</h2>
-      <textarea id="names" rows="3" placeholder="Один студент на строку: Фамилия Имя"></textarea>
-      <div class="row" style="margin-top:10px">
-        <button class="main" id="add">Добавить студентов</button>
-        <button id="csv">Скачать таблицу (CSV)</button>
-      </div>
-    </div>
-    <div class="card">
-      <h2>Пароли студентов</h2>
-      <p class="mute" style="margin:0 0 10px">Каждый студент придумывает свой пароль при первом входе. Если забыл, сбросьте, и он задаст новый.</p>
-      <div class="row"><div><select id="rpw" aria-label="Студент"></select></div><button id="rpwBtn">Сбросить пароль</button></div>
-      <p class="mute" id="rpwMsg" style="margin:10px 0 0"></p>
+      <details>
+        <summary><h2 style="display:inline;margin:0">Настройки старосты</h2></summary>
+        <div style="margin-top:14px">
+          <h2>Список группы</h2>
+          <textarea id="names" rows="3" placeholder="Один студент на строку: Фамилия Имя"></textarea>
+          <div class="row" style="margin-top:10px">
+            <button class="main" id="add">Добавить студентов</button>
+            <button id="csv">Скачать таблицу (CSV)</button>
+          </div>
+        </div>
+        <div style="margin-top:18px">
+          <h2>Пароли студентов</h2>
+          <p class="mute" style="margin:0 0 10px">Каждый студент придумывает свой пароль при первом входе. Если забыл, сбросьте, и он задаст новый.</p>
+          <div class="row"><div><select id="rpw" aria-label="Студент"></select></div><button id="rpwBtn">Сбросить пароль</button></div>
+          <p class="mute" id="rpwMsg" style="margin:10px 0 0"></p>
+        </div>
+        <div style="margin-top:18px">
+          <h2>Стартовые часы (до журнала)</h2>
+          <p class="mute" style="margin:0 0 10px">Студент вносит эти часы сам один раз. Если он ошибся, сбросьте их здесь, чтобы он мог заполнить заново.</p>
+          <div class="row"><div><select id="rbase" aria-label="Студент"></select></div><button id="rbaseBtn">Сбросить часы</button></div>
+          <p class="mute" id="rbaseMsg" style="margin:10px 0 0"></p>
+        </div>
+      </details>
     </div>
   </div>
 
@@ -148,13 +200,32 @@ label.chk input{width:auto}
       <div id="mstate" style="margin-bottom:12px"></div>
       <div class="row"><div><label class="mute" for="mall">Весь день</label><select id="mall"></select></div></div>
       <div class="row" id="mpairs" style="margin-top:10px"></div>
+      
+      <!-- Поле для указания причины ПН -->
+      <div id="pnReasonBox" class="hidden" style="margin-top:12px">
+        <label class="mute" for="pnReason">Кратко укажите причину отсутствия (обязательно для ПН)</label>
+        <input type="text" id="pnReason" placeholder="Например: проспал, по семейным обстоятельствам..." maxlength="100">
+      </div>
+
       <p class="mute" style="margin:10px 0 0">Болезнь (Б) ставится сразу на все 4 пары. Другие причины выбираются для каждой пары отдельно. Отметку можно внести один раз за день, дальше изменить её может только староста.</p>
       <div class="row" style="margin-top:12px">
         <button class="main" id="msave">Сохранить</button>
       </div>
     </div>
+    
+    <div class="card">
+      <h2>Часы до журнала</h2>
+      <p class="mute" id="baseHint" style="margin:-6px 0 10px">Укажите часы пропусков, которые у вас накопились до использования этого сайта (вносится 1 раз).</p>
+      <div class="row">
+        <div><label class="mute" for="baseTot">Всего часов</label><input type="number" id="baseTot" min="0" step="2" placeholder="0"></div>
+        <div><label class="mute" for="basePn">Из них ПН</label><input type="number" id="basePn" min="0" step="2" placeholder="0"></div>
+        <button class="main" id="saveBase">Сохранить</button>
+      </div>
+    </div>
+
     <div class="card"><h2>Мои пропуски</h2><div id="mine"></div></div>
-<div class="card">
+    
+    <div class="card">
       <h2>Отсутствующие сегодня</h2>
       <div id="stu-group"></div>
     </div>
@@ -165,13 +236,15 @@ label.chk input{width:auto}
     <div class="legend">
       <div><b>Б</b> болезнь</div>
       <div><b>УП</b> уважительная причина по заявлению (только для факультета права)</div>
-      <div><b class="pn">ПН</b> причина неизвестна</div>
+      <div><b class="pn">ПН</b> причина неизвестна (считается пропуском)</div>
+      <div><b>Н</b> меня не будет (не идёт в общие часы)</div>
       <div><b>СБ</b> спортивные сборы (соревнования)</div>
       <div><b>ОМ</b> общественные мероприятия</div>
       <div><b>Ц</b> ЦКВР (Центр культурно-воспитательной работы)</div>
-      <div><b>ПР</b> присутствовал, но не принимал участия по состоянию здоровья (только физкультура)</div>
+      <div><b>ПР</b> присутствовал, но не принимал участия по состоянию здоровья (только физкультура; пропуском не считается)</div>
     </div>
   </div>
+
 </main>
 
 <div id="panel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="ptitle">
@@ -180,36 +253,81 @@ label.chk input{width:auto}
     <div class="tabs" style="margin-top:12px"><button type="button" id="ptN" class="main">Что нового</button><button type="button" id="ptL">Лог действий</button></div>
     <div id="pnew">
       <ul>
-        <li><b>Личные пароли.</b> При первом входе студент придумывает свой пароль (нужен код группы один раз). Забыл пароль: староста сбросит его в разделе «Пароли студентов».</li>
-        <li><b>Запомнить меня.</b> Галочка на входе: если стоит, сайт не спросит пароль в следующий раз.</li>
-        <li><b>Один раз.</b> Студент вносит свою отметку за день один раз, менять её дальше может только староста.</li>
-        <li><b>Лог действий.</b> Староста видит все действия, студент только свои и те, что касаются его.</li>
-        <li><b>Новый год.</b> Гирлянда и снег. Кнопка ❄ вверху выключает снег.</li>
+        <li><b>Мини-игры в одном месте.</b> Кнопка «🎮 Игры» в верхнем меню теперь открывает шторку, где находятся кликер про Лёху Буссоля и новая игра с Никитой Готиным.</li>
+        <li><b>Тайный Санта.</b> Старосты могут запустить Санту заранее. Студенты увидят кнопку Санты только с 22 декабря.</li>
+        <li><b>Кандидаты для опроса.</b> В панели старосты появилась карточка, которая автоматически вычисляет, у кого больше всего ПН за текущую неделю (без учета прошлых долгов), чтобы знать, кого вызвать к доске.</li>
+        <li><b>Своя причина для ПН.</b> Если студент ставит себе ПН, он должен вписать причину (например, проспал). Староста её увидит.</li>
       </ul>
     </div>
     <div id="plog" class="hidden"></div>
   </div>
 </div>
 
+<!-- Окно Тайного Санты -->
+<div id="santaPanel" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="mbox">
+    <div class="top" style="margin:0">
+      <h2 style="margin:0">🎅 Тайный Санта</h2>
+      <button id="santaClose" aria-label="Закрыть">✕</button>
+    </div>
+    <div id="santaContent" style="margin-top:16px"></div>
+  </div>
+</div>
+
+<!-- Окно Мини-Игр -->
+<div id="gamesPanel" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="mbox">
+    <div class="top" style="margin:0">
+      <h2 style="margin:0">🎮 Мини-игры</h2>
+      <button id="gamesClose" aria-label="Закрыть">✕</button>
+    </div>
+    
+    <div style="margin-top:16px; display:flex; flex-direction:column; gap:16px;">
+      
+      <!-- Игра 1: Лёха -->
+      <div class="card" style="margin:0">
+        <h2>💸 Взять кредит на Лёху (Буссоля)</h2>
+        <p class="mute" style="margin:0 0 10px">Шуточный кликер. Каждый клик добавляет 100 вымышленных BYN к долгу Лёхи.</p>
+        <div class="row">
+          <button class="main" id="lehaBorrow" type="button">Взять 100 бел. руб.</button>
+          <strong id="lehaDebt" aria-live="polite">Долг Лёхи: 0 бел. руб.</strong>
+        </div>
+        <p class="mute" id="lehaClicks" style="margin:8px 0 0">Кликов: 0</p>
+      </div>
+
+      <!-- Игра 2: Никита -->
+      <div class="card" style="margin:0; border-top-color:var(--ok)">
+        <h2>✂️ Состриги волосы Никите Готину</h2>
+        <p class="mute" style="margin:0 0 10px">Поможем Никите с новой причёской. Один клик — минус 1 сантиметр волос!</p>
+        <div class="row">
+          <button class="main" id="nikitaCut" type="button" style="background:var(--ok); border-color:var(--ok)">Состричь 1 см</button>
+          <strong id="nikitaHair" aria-live="polite">Сострижено: 0 см</strong>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script>
 /* ===== НАСТРОЙКИ ===== */
-const HEADS=["Алейников Владислав","Далидович Александра","Жигалкович Елизавета","Сарычев Арсений"];  // старосты: фамилия и имя
-const DEFAULT_STUDENTS=[  // список группы 4501, подставляется, пока староста не изменил список
+const HEADS=["Алейников Владислав","Далидович Александра","Жигалкович Елизавета","Сарычев Арсений"];
+const DEFAULT_STUDENTS=[
 "Алейников Владислав","Аполоник Алина","Буссоль Алексей","Быкова Анастасия","Война Роман","Готин Никита",
 "Грижневич Алёна","Далидович Александра","Евстратовская Дарья","Жигалкович Елизавета","Жолнерович Валерия",
 "Жук Игорь","Зыгмантович Мария","Ивашкевич Яна","Каланцер Дарья","Комаров Павел","Крюк Виктория",
 "Буканова Виктория","Новик Александра","Паско Валентин","Прищик Альбина","Романович Мария",
 "Савилова Анастасия","Сарычев Арсений","Селькова Екатерина","Стамбровская Татьяна","Субоч Александра",
 "Тямчик Лилия","Цеханович Дарья","Щепко Ульяна"];
-const STUDENT_CODE="4501";        // код группы: нужен студенту только при первом входе, чтобы создать личный пароль
-const HEAD_CODE="матарас";       // код для входа старосты (смените!); пусто = без кода
-const DB_URL="https://propuski-791e4-default-rtdb.europe-west1.firebasedatabase.app/";                  // адрес Firebase Realtime Database; пусто = только этот браузер
-const RESET_HOUR=20;              // во сколько журнал переходит на новый день
-const PAIR_HOURS=2;               // сколько часов в одной паре
+const STUDENT_CODE="4501";
+const HEAD_CODE="матарас";
+const DB_URL="https://propuski-791e4-default-rtdb.europe-west1.firebasedatabase.app/";
+const RESET_HOUR=20;
+const PAIR_HOURS=2;
 /* ===================== */
 
-const CODES=["Б","УП","ПН","СБ","ОМ","Ц","ПР"];
-const LABELS={"Б":"Б — болезнь (весь день)","УП":"УП — уважительная причина по заявлению (право)","ПН":"ПН — причина неизвестна","СБ":"СБ — спортивные сборы","ОМ":"ОМ — общественные мероприятия","Ц":"Ц — ЦКВР","ПР":"ПР — присутствовал, но не участвовал (физкультура)"};
+const CODES=["Б","УП","ПН","Н","СБ","ОМ","Ц","ПР"];
+const LABELS={"Б":"Б — болезнь (весь день)","УП":"УП — уважительная причина по заявлению (право)","ПН":"ПН — причина неизвестна (считается пропуском)","Н":"Н — меня не будет (не идёт в общие часы)","СБ":"СБ — спортивные сборы","ОМ":"ОМ — общественные мероприятия","Ц":"Ц — ЦКВР","ПР":"ПР — присутствовал, но не участвовал (физкультура)"};
 const $=id=>document.getElementById(id);
 const norm=s=>s.trim().toLowerCase().replace(/ё/g,"е").replace(/\s+/g," ");
 const pad=n=>String(n).padStart(2,"0");
@@ -220,24 +338,28 @@ function workDate(){const d=new Date();if(d.getHours()>=RESET_HOUR)d.setDate(d.g
 function lsGet(x){try{return localStorage.getItem(x)}catch(e){return null}}
 function lsSet(x,v){try{localStorage.setItem(x,v)}catch(e){}}
 
-/* ===== пары: отметка = 4 значения ("" = был на паре, иначе код причины) ===== */
 const emptyP=()=>["","","",""];
 const pairsOf=m=>m.p||(m.c?[m.c,m.c,m.c,m.c]:emptyP());
-const hoursOf=m=>pairsOf(m).filter(Boolean).length*PAIR_HOURS;
+const hoursOf=m=>pairsOf(m).filter(c=>c&&c!=="ПР"&&c!=="Н").length*PAIR_HOURS;
 function setPair(p,i,v){
   if(v==="Б")return Array(4).fill("Б");
   const r=p.slice();r[i]=v==="+"?"":v;return r;
 }
 function describe(m){
   const p=pairsOf(m);
-  if(p.every(x=>!x))return "присутствует";
-  if(p.every(x=>x===p[0]))return p[0]+", весь день";
-  return [...new Set(p.filter(Boolean))].map(c=>c+": "+p.map((x,i)=>x===c?i+1:0).filter(Boolean).join(", ")+" п.").join("; ");
+  let res = "";
+  if(p.every(x=>!x)) res = "присутствует";
+  else if(p.every(x=>x===p[0])) res = p[0]+", весь день";
+  else res = [...new Set(p.filter(Boolean))].map(c=>c+": "+p.map((x,i)=>x===c?i+1:0).filter(Boolean).join(", ")+" п.").join("; ");
+  
+  if(p.includes("ПН") && m.msg) {
+    res += ` (причина: ${m.msg})`;
+  }
+  return res;
 }
 
-let me=null,isHead=false,role="user",seeded=false,dirty=false,db={students:[],marks:{},users:{},log:{}},undo=[],lastWork=workDate();
+let me=null,isHead=false,role="user",seeded=false,dirty=false,db={students:[],marks:{},users:{},base:{},santa:{},log:{}},undo=[],lastWork=workDate();
 
-/* ===== хранение: общая база (если задан DB_URL) + копия в браузере ===== */
 const base=()=>DB_URL.replace(/\/$/,"")+"/journal";
 function save(){lsSet("absence:db",JSON.stringify(db))}
 function net(path,val){
@@ -248,21 +370,20 @@ async function pull(){
   let j=null;
   if(DB_URL){try{j=await (await fetch(base()+".json")).json()}catch(e){}}
   else{try{j=JSON.parse(lsGet("absence:db"))}catch(e){}}
-  if(j)db={students:j.students||[],marks:j.marks||{},users:j.users||{},log:j.log||{}};
+  if(j)db={students:j.students||[],marks:j.marks||{},users:j.users||{},base:j.base||{},santa:j.santa||{},log:j.log||{}};
   if(!db.students.length){db.students=[...DEFAULT_STUDENTS];seeded=true}
 }
 const getMark=(d,n)=>(db.marks[d]||{})[k(n)];
 function putMark(d,n){save();const v=getMark(d,n);net("/marks/"+d+"/"+encodeURIComponent(k(n)),v===undefined?null:v)}
 function putDay(d){save();net("/marks/"+d,db.marks[d]||null)}
 function putStudents(){save();net("/students",db.students)}
-function writeMark(d,n,p,by){db.marks[d]=db.marks[d]||{};db.marks[d][k(n)]={p,by,t:Date.now()};putMark(d,n)}
+function writeMark(d,n,p,by,msg){db.marks[d]=db.marks[d]||{};db.marks[d][k(n)]={p,by,t:Date.now(), msg:msg||""};putMark(d,n)}
 function dropMark(d,n){
   if(!db.marks[d])return;delete db.marks[d][k(n)];
   if(!Object.keys(db.marks[d]).length)delete db.marks[d];
   putMark(d,n);
 }
 
-/* ===== пароли, лог, запомнить ===== */
 async function hashPw(n,pw){
   const x="absence|"+norm(n)+"|"+pw;
   try{
@@ -282,7 +403,6 @@ function rememberSet(o,rem){
 function savedLogin(){try{return JSON.parse(sessionStorage.getItem("absence:current")||lsGet("absence:current"))}catch(e){return null}}
 function rememberClear(){lsSet("absence:current","");try{sessionStorage.removeItem("absence:current")}catch(e){}}
 
-/* ===== вход ===== */
 function setRole(r){
   role=r;$("tabU").classList.toggle("main",r==="user");$("tabH").classList.toggle("main",r==="head");
   $("code").value="";$("gcode").value="";$("err").textContent="";fillWho();
@@ -331,6 +451,7 @@ async function start(name,r){
   if(isHead){const lim=Date.now()-60*864e5;Object.keys(db.log).forEach(x=>{if(db.log[x].t<lim){delete db.log[x];net("/log/"+x,null)}})}
   $("date").value=workDate();lastWork=workDate();show();
 }
+
 function show(){
   $("login").classList.toggle("hidden",!!me);
   $("app").classList.toggle("hidden",!me);
@@ -338,27 +459,47 @@ function show(){
   $("user").textContent=me+(isHead?" · староста":" · студент");
   $("head").classList.toggle("hidden",!isHead);
   $("user-view").classList.toggle("hidden",isHead);
+  
+  // Логика отображения кнопки Санты (С 22 декабря или для старосты)
+  const d = new Date();
+  const isSantaTime = d.getMonth() === 11 && d.getDate() >= 22;
+  $("santaBtn").classList.toggle("hidden", !(isHead || isSantaTime));
+
   render();
 }
 
-/* ===== расчёты ===== */
-function stats(from,to){
-  const r={};db.students.forEach(n=>r[n]={tot:0,by:{}});
+function stats(from, to, ignoreBase=false){
+  const r={};
+  db.students.forEach(n=>{
+    r[n]={tot:0,by:{}};
+    if(!ignoreBase) {
+      const b = db.base[k(n)] || {tot:0, pn:0};
+      r[n].tot += parseInt(b.tot) || 0;
+      r[n].by["ПН"] = parseInt(b.pn) || 0;
+    }
+  });
   Object.keys(db.marks).forEach(d=>{
     if((from&&d<from)||(to&&d>to))return;
     db.students.forEach(n=>{
       const m=getMark(d,n);if(!m)return;
-      pairsOf(m).forEach(c=>{if(c){r[n].tot+=PAIR_HOURS;r[n].by[c]=(r[n].by[c]||0)+PAIR_HOURS}});
+      pairsOf(m).forEach(c=>{
+        if(c&&c!=="ПР"){
+          r[n].by[c]=(r[n].by[c]||0)+PAIR_HOURS;
+          if(c!=="Н") r[n].tot+=PAIR_HOURS;
+        }
+      });
     });
   });
   return r;
 }
 
-/* ===== действия старосты ===== */
 function snap(){undo.push(JSON.stringify(db.marks));if(undo.length>30)undo.shift()}
 function headSet(n,p){
-  const d=$("date").value;snap();writeMark(d,n,p,"h");
-  logAct("за "+fmt(d)+": "+describe({p})+(hoursOf({p})?" ("+hoursOf({p})+" ч)":""),n);render();
+  const d=$("date").value;
+  const oldMark = getMark(d, n);
+  const msg = (oldMark && p.includes("ПН")) ? oldMark.msg : "";
+  snap();writeMark(d,n,p,"h", msg);
+  logAct("за "+fmt(d)+": "+describe({p, msg})+(hoursOf({p})?" ("+hoursOf({p})+" ч)":""),n);render();
 }
 function headClear(n){const d=$("date").value;snap();dropMark(d,n);logAct("за "+fmt(d)+": снял отметку",n);render()}
 $("undo").onclick=()=>{
@@ -366,6 +507,9 @@ $("undo").onclick=()=>{
   db.marks=JSON.parse(undo.pop());save();net("/marks",db.marks);logAct("отменил последнее действие");render();
 };
 $("date").onchange=render;$("from").onchange=render;$("to").onchange=render;
+$("btnToday").onclick=()=>{$("date").value=workDate();render()};
+$("sortStat").onchange=render;
+
 $("add").onclick=()=>{
   $("names").value.split("\n").map(s=>s.trim().replace(/\s+/g," ")).filter(Boolean)
     .forEach(n=>{if(!db.students.includes(n))db.students.push(n)});
@@ -374,38 +518,55 @@ $("add").onclick=()=>{
 };
 $("csv").onclick=()=>{
   const dates=Object.keys(db.marks).sort(),st=stats();
-  const rows=[["Студент",...dates,"Всего часов","ПН часов"]];
-  db.students.forEach(n=>rows.push([n,...dates.map(d=>{const m=getMark(d,n);return m?(hoursOf(m)?describe(m)+" ("+hoursOf(m)+" ч)":"+"):""}),st[n].tot,st[n].by["ПН"]||0]));
+  const rows=[["Студент",...dates,"Всего часов","ПН часов","Н часов"]];
+  db.students.forEach(n=>rows.push([n,...dates.map(d=>{const m=getMark(d,n);return m?(hoursOf(m)?describe(m)+" ("+hoursOf(m)+" ч)":"+"):""}),st[n].tot,st[n].by["ПН"]||0,st[n].by["Н"]||0]));
   const csv="\uFEFF"+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(";")).join("\n");
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
   a.download="propuski.csv";a.click();
 };
 
-/* ===== действия студента ===== */
 const myName=()=>db.students.find(s=>norm(s)===norm(me));
 const STU_OPTS='<option value="+">Присутствую</option>'+CODES.map(c=>`<option value="${c}">${LABELS[c]}</option>`).join("");
 $("mall").innerHTML=STU_OPTS;
 $("mpairs").innerHTML=[0,1,2,3].map(i=>`<div><label class="mute" for="mp${i}">${i+1} пара</label><select id="mp${i}">${STU_OPTS}</select></div>`).join("");
 const stuVals=()=>[0,1,2,3].map(i=>$("mp"+i).value);
-$("mall").onchange=()=>{dirty=true;[0,1,2,3].forEach(i=>$("mp"+i).value=$("mall").value)};
+
+function updatePnBox() {
+  const hasPn = $("mall").value === "ПН" || stuVals().includes("ПН");
+  $("pnReasonBox").classList.toggle("hidden", !hasPn);
+}
+
+$("mall").onchange=()=>{dirty=true;[0,1,2,3].forEach(i=>$("mp"+i).value=$("mall").value); updatePnBox();};
 [0,1,2,3].forEach(i=>$("mp"+i).onchange=()=>{
   dirty=true;
   if($("mp"+i).value==="Б"){[0,1,2,3].forEach(j=>$("mp"+j).value="Б");$("mall").value="Б"}
+  updatePnBox();
 });
+
 $("msave").onclick=async()=>{
   const n=myName(),d=workDate();if(!n)return;
   await pull();
   if(getMark(d,n)){dirty=false;render();return}
   const p=stuVals().map(v=>v==="+"?"":v);
-  writeMark(d,n,p,"s");
-  logAct("за "+fmt(d)+": "+describe({p})+(hoursOf({p})?" ("+hoursOf({p})+" ч)":""),n);
+  const msg = p.includes("ПН") ? $("pnReason").value.trim() : "";
+  writeMark(d,n,p,"s", msg);
+  logAct("за "+fmt(d)+": "+describe({p, msg})+(hoursOf({p})?" ("+hoursOf({p})+" ч)":""),n);
   dirty=false;render();
 };
 
-/* ===== отрисовка ===== */
-function render(){if(!me)return;isHead?renderHead():renderUser()}
+$("saveBase").onclick = async () => {
+  const n = myName(); if(!n) return;
+  const tot = parseInt($("baseTot").value) || 0;
+  const pn = parseInt($("basePn").value) || 0;
+  db.base[k(n)] = {tot, pn};
+  save();
+  net("/base/"+encodeURIComponent(k(n)), {tot, pn});
+  logAct("указал часы до журнала: "+tot+" ч (из них ПН: "+pn+")", n);
+  render();
+};
 
+function render(){if(!me)return;isHead?renderHead():renderUser()}
 const editing=new Set();
 function opts(allowNone){
   return '<option value="">—</option>'+CODES.map(c=>`<option>${c}</option>`).join("");
@@ -434,9 +595,35 @@ function cell(tr,content,cls){
   tr.appendChild(td);return td;
 }
 function clearBtn(n){const b=document.createElement("button");b.textContent="Отмена";b.title="Снять отметку";b.onclick=()=>headClear(n);return b}
+
 function renderHead(){
   const d=$("date").value,own=n=>norm(n)===norm(me);
   $("undo").disabled=!undo.length;
+
+  // Вычисляем лидеров ПН за ТЕКУЩУЮ неделю (без учета прошлых долгов)
+  const now = new Date();
+  const day = now.getDay();
+  const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+  const mon = new Date(now.getTime()); mon.setDate(diff);
+  const sun = new Date(mon.getTime()); sun.setDate(mon.getDate() + 6);
+  const monStr = ymd(mon), sunStr = ymd(sun);
+  
+  const wStats = stats(monStr, sunStr, true); // true = игнорировать старые базовые часы
+  let maxPn = 0, weeklyLeaders = [];
+  for (const [student, data] of Object.entries(wStats)) {
+    const pn = data.by["ПН"] || 0;
+    if (pn > maxPn) { maxPn = pn; weeklyLeaders = [student]; }
+    else if (pn === maxPn && pn > 0) { weeklyLeaders.push(student); }
+  }
+  
+  if (maxPn > 0) {
+    $("askList").innerHTML = `<div class="warn" style="margin:0">
+      Максимум ПН за эту неделю (${fmt(monStr)} — ${fmt(sunStr)}): <b>${maxPn} ч.</b><br>
+      Кого спросить на паре: <b>${weeklyLeaders.join(", ")}</b>
+    </div>`;
+  } else {
+    $("askList").innerHTML = `<p class="mute">На этой неделе (с ${fmt(monStr)}) пропусков ПН пока нет.</p>`;
+  }
 
   /* моя отметка */
   const mine=db.students.find(own),mt=$("mytbl").tBodies[0];mt.innerHTML="";
@@ -449,9 +636,14 @@ function renderHead(){
     mt.appendChild(tr);
   }
 
-  /* только те, кто уже отметился (новые сверху) */
+  const dayMarks=db.marks[d]||{};
+  const allMarked=db.students.filter(n=>!own(n)&&Object.prototype.hasOwnProperty.call(dayMarks,k(n))&&dayMarks[k(n)]!==null)
+    .sort((a,b)=>a.localeCompare(b,"ru"));
+  
+  const marked=allMarked.filter(n=>hoursOf(getMark(d,n))>0 || pairsOf(getMark(d,n)).includes("Н"));
+  const present=allMarked.filter(n=>hoursOf(getMark(d,n))===0 && !pairsOf(getMark(d,n)).includes("Н"));
+
   const tb=$("tbl").tBodies[0];tb.innerHTML="";
-  const marked=db.students.filter(n=>!own(n)&&getMark(d,n)).sort((a,b)=>(getMark(d,b).t||0)-(getMark(d,a).t||0));
   marked.forEach(n=>{
     const cur=getMark(d,n),tr=document.createElement("tr");
     cell(tr,n,"n");cell(tr,describe(cur),"n");
@@ -467,9 +659,29 @@ function renderHead(){
       td.appendChild(editor(n,cur));r2.appendChild(td);tb.appendChild(r2);
     }
   });
+  $("empty").textContent=marked.length?"":"Пока никто с пропусками (или меткой «Н») не отметился.";
   $("empty").classList.toggle("hidden",marked.length>0);
 
-  /* кто не отметился: свёрнуто, список раскрывается по желанию */
+  const ptb=$("presTbl").tBodies[0];ptb.innerHTML="";
+  $("presDet").classList.toggle("hidden",!present.length);
+  if(present.length){
+    $("presS").textContent=`Присутствуют (нет пропусков): ${present.length}`;
+    present.forEach(n=>{
+      const cur=getMark(d,n),tr=document.createElement("tr");
+      cell(tr,n,"n");cell(tr,describe(cur),"n");
+      cell(tr,cur.by==="s"?"сам":"староста","mute");
+      const act=document.createElement("div");act.className="ed";
+      const e=document.createElement("button");e.textContent=editing.has(n)?"Готово":"Изменить";
+      e.onclick=()=>{editing.has(n)?editing.delete(n):editing.add(n);render()};
+      act.append(e,clearBtn(n));cell(tr,act);
+      ptb.appendChild(tr);
+      if(editing.has(n)){
+        const r2=document.createElement("tr"),td=document.createElement("td");td.colSpan=4;
+        td.appendChild(editor(n,cur));r2.appendChild(td);ptb.appendChild(r2);
+      }
+    });
+  }
+
   const unm=db.students.filter(n=>!getMark(d,n)&&!own(n));
   $("unm").classList.toggle("hidden",!unm.length);
   $("unmS").textContent=`Не отметились: ${unm.length} из ${db.students.length}`;
@@ -490,12 +702,28 @@ function renderHead(){
     rs.innerHTML=db.students.map(x=>`<option value="${x}">${x}${db.users[k(x)]?"":" (нет пароля)"}</option>`).join("");
     rs.dataset.sig=sig;if(prev)rs.value=prev;
   }
+  
+  const rb=$("rbase"), sigB=db.students.map(x=>x+(db.base[k(x)]?"+":"-")).join("|");
+  if(rb.dataset.sig!==sigB){
+    const prev=rb.value;
+    rb.innerHTML=db.students.map(x=>`<option value="${x}">${x}${db.base[k(x)]?" (уже внесены)":" (не вносились)"}</option>`).join("");
+    rb.dataset.sig=sigB;if(prev)rb.value=prev;
+  }
 
   const st=stats($("from").value,$("to").value);
-  const others=CODES.filter(c=>c!=="ПН"&&Object.values(st).some(x=>x.by[c]));
-  const rows=Object.entries(st).sort((a,b)=>(b[1].by["ПН"]||0)-(a[1].by["ПН"]||0)||b[1].tot-a[1].tot);
-  $("stat").innerHTML="<thead><tr><th>Студент</th><th>Всего ч</th><th>ПН ч</th>"+others.map(c=>`<th>${c} ч</th>`).join("")+"</tr></thead><tbody>"+
-    rows.map(([n,x])=>`<tr><td class="n"></td><td><b>${x.tot}</b></td><td class="${x.by["ПН"]?"pn":""}">${x.by["ПН"]||0}</td>`+others.map(c=>`<td>${x.by[c]||0}</td>`).join("")+"</tr>").join("")+"</tbody>";
+  const others=["Б",...CODES.filter(c=>c!=="ПР"&&c!=="ПН"&&c!=="Б"&&Object.values(st).some(x=>x.by[c]))];
+  const прогулов=x=>Math.round((x.by["ПН"]||0)/PAIR_HOURS);
+  
+  const sortMode = $("sortStat").value;
+  const rows = Object.entries(st).sort((a,b) => {
+    if (sortMode === "hours") {
+      return прогулов(b[1]) - прогулов(a[1]) || b[1].tot - a[1].tot || a[0].localeCompare(b[0], "ru");
+    }
+    return a[0].localeCompare(b[0], "ru");
+  });
+  
+  $("stat").innerHTML="<thead><tr><th>Студент</th><th>Прогулы (пары)</th><th>Всего ч</th><th>ПН ч</th>"+others.map(c=>`<th>${c} ч</th>`).join("")+"</tr></thead><tbody>"+
+    rows.map(([n,x])=>`<tr><td class="n"></td><td class="${прогулов(x)?"pn":""}"><b>${прогулов(x)}</b></td><td><b>${x.tot}</b></td><td class="${x.by["ПН"]?"pn":""}">${x.by["ПН"]||0}</td>`+others.map(c=>`<td>${x.by[c]||0}</td>`).join("")+"</tr>").join("")+"</tbody>";
   [...$("stat").tBodies[0].rows].forEach((tr,i)=>tr.cells[0].textContent=rows[i][0]);
 }
 
@@ -508,29 +736,50 @@ function renderUser(){
   $("mstate").innerHTML=cur
     ?`<span class="ok">${cur.by==="h"?"Староста отметил":"Вы внесли отметку"}:</span> `+describe(cur)+(hoursOf(cur)?` (${hoursOf(cur)} ч)`:"")+'<div class="mute">Изменить дальше может только староста.</div>'
     :'<span class="pn">Вы ещё не отметились.</span> Отметку можно внести один раз.';
+  
   if(!dirty){
     const p=cur?pairsOf(cur):emptyP();
     [0,1,2,3].forEach(i=>$("mp"+i).value=p[i]||"+");
     $("mall").value=p.every(x=>x===p[0])?(p[0]||"+"):"+";
+    $("pnReasonBox").classList.toggle("hidden", !p.includes("ПН"));
+    $("pnReason").value = cur && cur.msg ? cur.msg : "";
   }
-  ["mall","mp0","mp1","mp2","mp3","msave"].forEach(id=>$(id).disabled=locked);
+  
+  ["mall","mp0","mp1","mp2","mp3","msave","pnReason"].forEach(id=>$(id).disabled=locked);
+
+  const b = db.base[k(n)];
+  const isBaseSaved = !!b;
+  $("baseTot").value = b ? (b.tot || 0) : "";
+  $("basePn").value = b ? (b.pn || 0) : "";
+  $("baseTot").disabled = isBaseSaved;
+  $("basePn").disabled = isBaseSaved;
+  $("saveBase").disabled = isBaseSaved;
+  $("saveBase").textContent = isBaseSaved ? "Уже сохранено" : "Сохранить";
+  $("baseHint").textContent = isBaseSaved 
+    ? "Часы до журнала можно внести только один раз. Если нужно исправить, попросите старосту обнулить их." 
+    : "Укажите часы пропусков, которые у вас накопились до использования этого сайта (вносится 1 раз).";
+
   const st=stats()[n],items=[];
   Object.keys(db.marks).sort().reverse().forEach(x=>{const m=getMark(x,n);if(m&&hoursOf(m))items.push([x,m])});
-  $("mine").innerHTML=`<p><span class="tag">Всего: ${st.tot} ч</span><span class="tag ${st.by["ПН"]?"pn":""}">ПН: ${st.by["ПН"]||0} ч</span></p>`+
+  
+  let baseHtml = (b && (b.tot || b.pn)) ? `<p class="mute" style="font-size:13px; margin:4px 0 10px">Включая прошлые часы (Всего: ${b.tot}, ПН: ${b.pn})</p>` : '';
+  
+  $("mine").innerHTML=`<p style="margin-bottom:4px"><span class="tag">Всего: ${st.tot} ч</span><span class="tag ${st.by["ПН"]?"pn":""}">ПН: ${st.by["ПН"]||0} ч</span></p>`+
+    baseHtml +
     (items.length?`<div class="scroll"><table><thead><tr><th>Дата</th><th>Причина</th><th>Часы</th></tr></thead><tbody>`+
     items.map(([x,m])=>`<tr><td>${fmt(x)}</td><td>${describe(m)}</td><td>${hoursOf(m)}</td></tr>`).join("")+"</tbody></table></div>":
     '<p class="mute">Пропусков нет.</p>');
-const abs = db.students.filter(s => getMark(d, s) && hoursOf(getMark(d, s)) > 0);
+
+  const abs = db.students.filter(s => getMark(d, s) && (hoursOf(getMark(d, s)) > 0 || pairsOf(getMark(d, s)).includes("Н")));
   const unm = db.students.filter(s => !getMark(d, s));
   $("stu-group").innerHTML = abs.length 
-? abs.map(s => `<div style="padding:6px 0; border-bottom:1px solid var(--line)"><b>${s}</b>: ${describe(getMark(d, s))} (${hoursOf(getMark(d, s))} ч)</div>`).join("") 
+    ? abs.map(s => `<div style="padding:6px 0; border-bottom:1px solid var(--line)"><b>${s}</b>: ${describe(getMark(d, s))} ${hoursOf(getMark(d, s)) ? `(${hoursOf(getMark(d, s))} ч)` : ""}</div>`).join("") 
     : '<p class="mute">Отсутствующих нет.</p>';
   if (unm.length) {
     $("stu-group").innerHTML += `<details class="mute" style="margin-top:10px"><summary>Ещё не отметились (${unm.length})</summary><div style="margin-top:5px">${unm.join("<br>")}</div></details>`;
   }
 }
 
-/* ===== смена дня в 20:00 и обновление данных ===== */
 function rollover(){
   const w=workDate();
   if(w!==lastWork){if($("date").value===lastWork)$("date").value=w;lastWork=w;undo=[];dirty=false;render()}
@@ -546,7 +795,6 @@ setInterval(async()=>{
   rollover();
 },15000);
 
-/* ===== сброс пароля старостой ===== */
 $("rpwBtn").onclick=()=>{
   const n=$("rpw").value;if(!n)return;
   if(!db.users[k(n)]){$("rpwMsg").textContent=n+": пароль ещё не создан.";return}
@@ -555,7 +803,97 @@ $("rpwBtn").onclick=()=>{
   $("rpwMsg").textContent="Пароль сброшен. "+n+" задаст новый при следующем входе.";render();
 };
 
-/* ===== лог и новое ===== */
+$("rbaseBtn").onclick=()=>{
+  const n=$("rbase").value;if(!n)return;
+  if(!db.base[k(n)]){$("rbaseMsg").textContent=n+": часы ещё не вносились.";return}
+  delete db.base[k(n)];save();net("/base/"+encodeURIComponent(k(n)),null);
+  logAct("сбросил стартовые часы",n);
+  $("rbaseMsg").textContent="Часы сброшены. "+n+" теперь может внести их заново.";render();
+};
+
+/* ===== ТАЙНЫЙ САНТА ===== */
+function generateSanta() {
+  let s = [...db.students];
+  for (let i = s.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [s[i], s[j]] = [s[j], s[i]];
+  }
+  db.santa = {};
+  for (let i = 0; i < s.length; i++) {
+      db.santa[k(s[i])] = s[(i + 1) % s.length];
+  }
+  save(); net("/santa", db.santa); logAct("запустил Тайного Санту");
+  renderSanta();
+}
+function clearSanta() {
+  db.santa = {}; save(); net("/santa", null); logAct("сбросил Тайного Санту");
+  renderSanta();
+}
+function renderSanta() {
+  const box = $("santaContent");
+  if (!me) return;
+  const hasSanta = Object.keys(db.santa||{}).length > 0;
+  if (isHead) {
+      box.innerHTML = hasSanta 
+          ? `<p class="ok" style="margin-top:0">Жребий брошен! Каждый студент теперь видит свою цель.</p>
+             <button class="main" id="santaReset">Сбросить Санту</button>
+             <p class="mute" style="margin-top:10px">Вы, как староста, тоже участвуете. Ваша цель: <b style="color:var(--ink)">${db.santa[k(me)]}</b></p>`
+          : `<p class="mute" style="margin-top:0">Сгенерировать случайное распределение для всей группы?</p>
+             <button class="main" id="santaGen">Запустить Санту</button>`;
+      if($("santaGen")) $("santaGen").onclick = generateSanta;
+      if($("santaReset")) $("santaReset").onclick = clearSanta;
+  } else {
+      box.innerHTML = hasSanta
+          ? `<div style="font-size:18px; text-align:center; padding: 20px">Вы дарите подарок:<br><b style="font-size:24px; color:var(--acc)">${db.santa[k(me)]||"Ошибка"}</b></div>`
+          : `<p class="mute" style="margin-top:0">Староста еще не запустил Тайного Санту. Ждите!</p>`;
+  }
+}
+$("santaBtn").onclick = async () => {
+  $("santaPanel").classList.remove("hidden");
+  await pull();
+  renderSanta();
+};
+$("santaClose").onclick = () => $("santaPanel").classList.add("hidden");
+$("santaPanel").onclick=e=>{if(e.target===$("santaPanel"))$("santaPanel").classList.add("hidden")};
+
+/* ===== МИНИ-ИГРЫ ===== */
+$("gamesBtn").onclick = () => $("gamesPanel").classList.remove("hidden");
+$("gamesClose").onclick = () => $("gamesPanel").classList.add("hidden");
+$("gamesPanel").onclick = e => {if(e.target===$("gamesPanel"))$("gamesPanel").classList.add("hidden")};
+
+// Лёха
+(function(){
+  const key="absence:leha-clicks";
+  let clicks=0;
+  try{clicks=Math.max(0,parseInt(localStorage.getItem(key)||"0",10)||0)}catch(e){}
+  const paint=()=>{
+    $("lehaDebt").textContent="Долг Лёхи: "+(clicks*100).toLocaleString("ru-RU")+" бел. руб.";
+    $("lehaClicks").textContent="Кликов: "+clicks;
+  };
+  $("lehaBorrow").onclick=()=>{
+    clicks++;
+    try{localStorage.setItem(key,String(clicks))}catch(e){}
+    paint();
+  };
+  paint();
+})();
+
+// Никита
+(function(){
+  const key="absence:nikita-cut";
+  let cut=0;
+  try{cut=Math.max(0,parseInt(localStorage.getItem(key)||"0",10)||0)}catch(e){}
+  const paint=()=>{
+    $("nikitaHair").textContent="Сострижено: "+cut+" см";
+  };
+  $("nikitaCut").onclick=()=>{
+    cut++;
+    try{localStorage.setItem(key,String(cut))}catch(e){}
+    paint();
+  };
+  paint();
+})();
+
 function renderPanel(){
   const box=$("plog");box.innerHTML="";
   const list=Object.values(db.log||{}).filter(e=>isHead||e.w===me||e.n===me).sort((a,b)=>b.t-a.t).slice(0,150);
@@ -579,7 +917,38 @@ $("ptN").onclick=()=>ptab(false);$("ptL").onclick=()=>ptab(true);
 $("pbtn").onclick=async()=>{$("panel").classList.remove("hidden");ptab(false);$("pclose").focus();await pull();if(!$("plog").classList.contains("hidden"))renderPanel()};
 $("pclose").onclick=()=>$("panel").classList.add("hidden");
 $("panel").onclick=e=>{if(e.target===$("panel"))$("panel").classList.add("hidden")};
-addEventListener("keydown",e=>{if(e.key==="Escape")$("panel").classList.add("hidden")});
+addEventListener("keydown",e=>{
+  if(e.key==="Escape") {
+    $("panel").classList.add("hidden");
+    $("santaPanel").classList.add("hidden");
+    $("gamesPanel").classList.add("hidden");
+  }
+});
+
+/* ===== Установка приложения (PWA) ===== */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  $("installBtn").classList.remove("hidden");
+});
+$("installBtn").onclick = async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') $("installBtn").classList.add("hidden");
+    deferredPrompt = null;
+  }
+};
+
+/* ===== Чёрно-белый режим ===== */
+let bwMode = lsGet("absence:bw") === "1";
+if(bwMode) document.body.classList.add("bw");
+$("bwb").onclick = () => {
+  bwMode = !bwMode;
+  document.body.classList.toggle("bw", bwMode);
+  lsSet("absence:bw", bwMode ? "1" : "0");
+};
 
 /* ===== новый год ===== */
 (function(){
@@ -615,3 +984,5 @@ fillWho();
 </script>
 </body>
 </html>
+
+```
