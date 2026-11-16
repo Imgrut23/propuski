@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#b3261e">
 <title>Журнал пропусков</title>
 <style>
 :root{--bg:#f1f3f6;--card:#fff;--ink:#1b2433;--mute:#667085;--line:#d9dee7;--acc:#b3261e;--acc-ink:#fff;--bad:#b42318;--ok:#13795b;--warn:#fff3d6}
@@ -13,45 +14,46 @@ body.bw{--acc:#555;--acc-ink:#fff;--bad:#666;--ok:#444;--warn:#e0e0e0}
 body.bw #garland, body.bw #snow { filter: grayscale(100%) }
 
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
 h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:700;margin:0}
 h2{font-size:20px;margin-bottom:10px}
-.wrap{max-width:900px;margin:0 auto;padding:36px 16px 60px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:16px;border-top:3px solid var(--acc)}
+.wrap{max-width:900px;margin:0 auto;padding:24px 12px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px;border-top:3px solid var(--acc)}
 input,select,textarea,button{font:inherit;color:inherit}
-input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;min-height:44px}
+textarea{min-height:80px}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-button{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px 14px}
+button{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:10px 14px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 button:disabled{opacity:.45;cursor:default}
 button.main{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:600}
 .row{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
-.row>*{flex:1 1 150px}.row>button{flex:0 0 auto}
+.row>*{flex:1 1 140px}.row>button{flex:0 0 auto}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
 .mute{color:var(--mute);font-size:14px}
-#login{max-width:420px;margin:10vh auto 0}
-#login h1{font-size:28px;margin-bottom:12px}
+#login{max-width:420px;margin:8vh auto 0;padding:20px}
+#login h1{font-size:26px;margin-bottom:12px}
 .tabs{display:flex;gap:8px;margin-bottom:12px}.tabs button{flex:1}
 #loginForm>*{margin-top:12px}
 .err{color:var(--bad);font-size:14px;min-height:20px}
-.scroll{overflow-x:auto}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse}
-td,th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+td,th{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
 th{font-size:13px;color:var(--mute);font-weight:600}
 td.n{white-space:normal}
-td select{width:auto;min-width:72px;max-width:130px}
-td input[type=number]{width:64px}
-.tag{display:inline-block;border-radius:6px;padding:1px 8px;background:var(--bg);border:1px solid var(--line);font-weight:700;margin:2px 4px 2px 0}
+td select{width:auto;min-width:72px;max-width:130px;min-height:38px;padding:6px 8px}
+td input[type=number]{width:64px;min-height:38px}
+.tag{display:inline-block;border-radius:6px;padding:2px 8px;background:var(--bg);border:1px solid var(--line);font-weight:700;margin:2px 4px 2px 0}
 .warn{background:var(--warn);border-radius:8px;padding:10px 12px;margin-bottom:12px}
-.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 16px;font-size:14px}
+.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px 12px;font-size:14px}
 .legend b{display:inline-block;min-width:34px;font-family:Georgia,serif}
 .pn{color:var(--bad);font-weight:700}
 .ok{color:var(--ok);font-weight:600}
 .hidden{display:none}
-.ed{display:flex;gap:6px;flex-wrap:wrap}.ed label{font-size:12px;color:var(--mute);display:block}
+.ed{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.ed label{font-size:12px;color:var(--mute);display:block}
 summary{cursor:pointer;font-weight:600}
-.urow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
-label.chk{display:flex;align-items:center;gap:8px}
-label.chk input{width:auto}
+.urow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+label.chk{display:flex;align-items:center;gap:8px;min-height:44px}
+label.chk input{width:auto;min-height:auto}
 #garland{position:absolute;top:0;left:0;right:0;height:24px;pointer-events:none;z-index:50;
  background:
   radial-gradient(circle at 10px 15px,#ff4d4d 5px,transparent 6px) 0 0/120px 24px repeat-x,
@@ -61,10 +63,65 @@ label.chk input{width:auto}
   linear-gradient(#2e7d32,#2e7d32) 0 4px/100% 2px no-repeat;
 }
 #snow{position:fixed;inset:0;pointer-events:none;z-index:40}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:6vh 12px;overflow:auto}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:12px;overflow:auto}
 .modal.hidden{display:none}
-.mbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;max-width:600px;width:100%}
+.mbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto}
 .mbox ul{padding-left:20px;margin:10px 0}.mbox li{margin-bottom:6px}
+
+/* Мобильная адаптация */
+@media(max-width:650px){
+  .wrap{padding:16px 8px 40px}
+  .card{padding:12px}
+  .top{flex-direction:column;align-items:stretch;gap:12px}
+  .top>div:first-child{margin-bottom:0}
+  .ed{justify-content:flex-start;flex-wrap:wrap}
+  .ed button{flex:1 1 auto;min-width:calc(50% - 4px);font-size:13px;padding:8px 6px}
+  .row>*{flex:1 1 100%}
+  .legend{grid-template-columns:1px}
+}
+
+/* ===== Телефон ===== */
+select,input,textarea{font-size:16px}
+.tabhide{display:none!important}
+body{padding-bottom:env(safe-area-inset-bottom)}
+.wrap{padding-bottom:96px}
+#bnav{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+#bnav button{flex:1;flex-direction:column;border:0;border-radius:0;background:none;font-size:12px;min-height:58px;gap:2px;color:var(--mute)}
+#bnav button span{font-size:22px;line-height:1}
+#bnav button.on{color:var(--acc);font-weight:700;box-shadow:inset 0 3px 0 var(--acc)}
+.hdrbtns{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.hdrbtns button{flex:0 0 auto;min-width:0;white-space:nowrap;font-size:14px;padding:8px 12px}
+.ed.eg{display:grid;grid-template-columns:repeat(5,minmax(80px,1fr))}
+.eg select{width:100%!important;max-width:none!important}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.chip{flex-direction:column;min-height:60px;padding:6px 4px;gap:1px}
+.chip b{font-size:18px}.chip small{font-size:11px;color:var(--mute);text-align:center;line-height:1.2}
+.chip.on{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}.chip.on small{color:var(--acc-ink)}
+#stat td:first-child,#stat th:first-child{position:sticky;left:0;background:var(--card)}
+#mpairs>*{flex:1 1 calc(50% - 10px)}
+@media(max-width:650px){
+  .top{position:sticky;top:0;z-index:55;background:var(--bg);margin:-16px -8px 12px;padding:calc(10px + env(safe-area-inset-top)) 8px 8px}
+  .ed.eg{grid-template-columns:1fr 1fr}
+  #tbl thead,#presTbl thead,#mytbl thead{display:none}
+  #tbl tr,#presTbl tr,#mytbl tr{display:block;padding:10px 0;border-bottom:1px solid var(--line)}
+  #tbl td,#presTbl td,#mytbl td{display:block;border:0;padding:2px 0;white-space:normal}
+  #tbl td.n:first-child,#presTbl td.n:first-child,#mytbl td.n:first-child{font-weight:700;font-size:17px}
+  .row>.half{flex:1 1 calc(50% - 5px)}
+  .urow{flex-direction:column;align-items:stretch}
+  .modal{align-items:flex-end;padding:0}
+  .mbox{border-radius:16px 16px 0 0;max-height:90dvh;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+  button.main,.card>.row>button{min-height:50px}
+}
+.lg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.lg>div{display:flex;gap:12px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.lg i{flex:0 0 46px;height:46px;border-radius:12px;background:var(--c);color:#fff;font:700 17px/46px Georgia,serif;text-align:center;font-style:normal}
+.lg span{display:flex;flex-direction:column;line-height:1.25}.lg small{color:var(--mute);font-size:13px}
+body.bw .lg i{background:#555}
+.tomfall{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:120}
+.tomfall .fly{position:absolute;font-size:60px;animation:fly .45s cubic-bezier(.5,0,1,.6) both;animation-delay:var(--d)}
+@keyframes fly{from{transform:translate(-50%,-50%) scale(.12) rotate(0);opacity:0}15%{opacity:1}85%{opacity:1}to{transform:translate(-50%,-50%) scale(3.6) rotate(220deg);opacity:0}}
+.tomfall .splat{position:absolute;width:var(--s);height:var(--s);border-radius:46% 54% 42% 58%/55% 45% 58% 42%;background:radial-gradient(circle at 38% 36%,#ef5646,#b3160b 72%);box-shadow:0 0 0 7px rgba(179,22,11,.35),inset -8px -10px 18px rgba(80,0,0,.35);animation:splat 4.2s ease-out both;animation-delay:calc(var(--d) + .4s)}
+@keyframes splat{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}5%{transform:translate(-50%,-50%) scale(1.15);opacity:.96}10%{transform:translate(-50%,-50%) scale(1);opacity:.96}75%{opacity:.9}100%{transform:translate(-50%,-10%) scale(.95,1.3);opacity:0}}
 </style>
 </head>
 <body>
@@ -93,9 +150,9 @@ label.chk input{width:auto}
 
 <main id="app" class="wrap hidden">
   <div class="top">
-    <div><h1 style="font-size:26px">🎄 Журнал пропусков</h1><div class="mute" id="user"></div><div class="mute ny"></div></div>
-    <div class="ed">
-      <button id="installBtn" class="hidden main" style="padding:4px 8px;font-size:13px">📱 Установить</button>
+    <div><h1 style="font-size:24px">🎄 Журнал пропусков</h1><div class="mute" id="user"></div><div class="mute ny"></div></div>
+    <div class="ed hdrbtns">
+      <button id="installBtn" class="hidden main" style="font-size:13px">📱 Установить</button>
       <button id="bwb" title="Чёрно-белый режим">🌗</button>
       <button id="snowb" aria-pressed="true" title="Снег вкл/выкл">❄</button>
       <button id="gamesBtn" title="Мини-игры">🎮 Игры</button>
@@ -107,9 +164,10 @@ label.chk input{width:auto}
 
   <!-- Староста -->
   <div id="head" class="hidden">
-    <div class="card">
+    <div data-t="today" class="card">
       <div class="row">
         <div><label class="mute" for="date">Дата</label><input type="date" id="date"></div>
+        <button id="dPrev" class="half" aria-label="Предыдущий день">‹ День</button><button id="dNext" class="half" aria-label="Следующий день">День ›</button>
         <button id="btnToday">Сегодня</button>
         <button id="undo" style="margin-left:auto">Отменить действие</button>
       </div>
@@ -117,18 +175,18 @@ label.chk input{width:auto}
     </div>
 
     <!-- Кандидаты для опроса (Лидеры ПН) -->
-    <div class="card" id="askCard">
+    <div data-t="today" class="card" id="askCard">
       <h2>Кандидаты для опроса (лидеры ПН)</h2>
       <p class="mute" style="margin:-6px 0 10px">Считается только текущая неделя. Прошлые долги сюда не входят.</p>
       <div id="askList"></div>
     </div>
 
-    <div class="card" id="mycard">
+    <div data-t="today" class="card" id="mycard">
       <h2>Моя отметка</h2>
       <div class="scroll"><table id="mytbl"><thead><tr><th>Студент</th><th>Отметка</th><th>Часы</th><th></th></tr></thead><tbody></tbody></table></div>
     </div>
 
-    <div class="card">
+    <div data-t="today" class="card">
       <h2>Кто отметился</h2>
       <p class="mute" style="margin:-6px 0 10px">Здесь отображаются все, у кого есть пропуски (или отметка «Н»). Списки отсортированы по имени.</p>
       
@@ -148,7 +206,7 @@ label.chk input{width:auto}
       <details id="unm" class="warn" style="margin:12px 0 0"><summary id="unmS"></summary><div id="unmL" style="margin-top:8px"></div></details>
     </div>
 
-    <div class="card">
+    <div data-t="stats" class="card">
       <details open>
         <summary><h2 style="display:inline;margin:0">Статистика пропусков (часы)</h2></summary>
         <div class="row" style="margin:10px 0">
@@ -166,10 +224,15 @@ label.chk input{width:auto}
       </details>
     </div>
 
-    <div class="card">
+    <div data-t="set" class="card">
       <details>
         <summary><h2 style="display:inline;margin:0">Настройки старосты</h2></summary>
         <div style="margin-top:14px">
+          <h2>Отметка студентов</h2>
+          <p class="mute" style="margin:0 0 10px">Сколько раз в день студент может сохранить свою отметку (по умолчанию 2). Дальше менять её может только староста.</p>
+          <div class="row"><div><label class="mute" for="limitIn">Раз в день</label><input type="number" id="limitIn" min="1" max="10"></div><button class="main" id="limitBtn">Сохранить</button></div>
+        </div>
+        <div style="margin-top:18px">
           <h2>Список группы</h2>
           <textarea id="names" rows="3" placeholder="Один студент на строку: Фамилия Имя"></textarea>
           <div class="row" style="margin-top:10px">
@@ -195,11 +258,11 @@ label.chk input{width:auto}
 
   <!-- Студент -->
   <div id="user-view" class="hidden">
-    <div class="card" id="mark-card">
+    <div data-t="mark" class="card" id="mark-card">
       <h2>Моя отметка на <span id="mdate"></span></h2>
       <div id="mstate" style="margin-bottom:12px"></div>
-      <div class="row"><div><label class="mute" for="mall">Весь день</label><select id="mall"></select></div></div>
-      <div class="row" id="mpairs" style="margin-top:10px"></div>
+      <div class="mute">Весь день</div><div id="chips" class="chips"></div><select id="mall" class="hidden"></select>
+      <details id="pairsDet" style="margin-top:12px"><summary>По парам отдельно</summary><div class="row" id="mpairs" style="margin-top:10px"></div></details>
       
       <!-- Поле для указания причины ПН -->
       <div id="pnReasonBox" class="hidden" style="margin-top:12px">
@@ -207,13 +270,13 @@ label.chk input{width:auto}
         <input type="text" id="pnReason" placeholder="Например: проспал, по семейным обстоятельствам..." maxlength="100">
       </div>
 
-      <p class="mute" style="margin:10px 0 0">Болезнь (Б) ставится сразу на все 4 пары. Другие причины выбираются для каждой пары отдельно. Отметку можно внести один раз за день, дальше изменить её может только староста.</p>
+      <p class="mute" style="margin:10px 0 0">Болезнь (Б) ставится сразу на все 4 пары. Другие причины выбираются для каждой пары отдельно. Отметку можно менять ограниченное число раз в день, дальше изменить её может только староста.</p>
       <div class="row" style="margin-top:12px">
-        <button class="main" id="msave">Сохранить</button>
+        <button class="main" id="msave" style="width:100%">Сохранить</button>
       </div>
     </div>
     
-    <div class="card">
+    <div data-t="me" class="card">
       <h2>Часы до журнала</h2>
       <p class="mute" id="baseHint" style="margin:-6px 0 10px">Укажите часы пропусков, которые у вас накопились до использования этого сайта (вносится 1 раз).</p>
       <div class="row">
@@ -223,28 +286,21 @@ label.chk input{width:auto}
       </div>
     </div>
 
-    <div class="card"><h2>Мои пропуски</h2><div id="mine"></div></div>
+    <div data-t="me" class="card"><h2>Мои пропуски</h2><div id="mine"></div></div>
     
-    <div class="card">
+    <div data-t="grp" class="card">
       <h2>Отсутствующие сегодня</h2>
       <div id="stu-group"></div>
     </div>
   </div>
 
-  <div class="card">
+  <div data-t="set grp mark" class="card">
     <h2>Условные обозначения</h2>
-    <div class="legend">
-      <div><b>Б</b> болезнь</div>
-      <div><b>УП</b> уважительная причина по заявлению (только для факультета права)</div>
-      <div><b class="pn">ПН</b> причина неизвестна (считается пропуском)</div>
-      <div><b>Н</b> меня не будет (не идёт в общие часы)</div>
-      <div><b>СБ</b> спортивные сборы (соревнования)</div>
-      <div><b>ОМ</b> общественные мероприятия</div>
-      <div><b>Ц</b> ЦКВР (Центр культурно-воспитательной работы)</div>
-      <div><b>ПР</b> присутствовал, но не принимал участия по состоянию здоровья (только физкультура; пропуском не считается)</div>
+    <div class="lg"><div style="--c:#2f8f6b"><i>Б</i><span><b>Болезнь</b><small>на весь день</small></span></div><div style="--c:#3b6fd4"><i>УП</i><span><b>Уважительная причина</b><small>по заявлению, только право</small></span></div><div style="--c:#c0362c"><i>ПН</i><span><b>Причина неизвестна</b><small>считается прогулом</small></span></div><div style="--c:#8a6d1d"><i>Н</i><span><b>Меня не будет</b><small>не идёт в общие часы</small></span></div><div style="--c:#7b4fc4"><i>СБ</i><span><b>Спортивные сборы</b><small>соревнования</small></span></div><div style="--c:#c2569b"><i>ОМ</i><span><b>Общественные мероприятия</b><small>участие в жизни вуза</small></span></div><div style="--c:#1c8a9e"><i>Ц</i><span><b>ЦКВР</b><small>культурно-воспитательный центр</small></span></div><div style="--c:#6b7280"><i>ПР</i><span><b>Присутствовал без участия</b><small>только физкультура, не пропуск</small></span></div></div>
     </div>
   </div>
 
+  <nav id="bnav" aria-label="Разделы"></nav>
 </main>
 
 <div id="panel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="ptitle">
@@ -253,6 +309,7 @@ label.chk input{width:auto}
     <div class="tabs" style="margin-top:12px"><button type="button" id="ptN" class="main">Что нового</button><button type="button" id="ptL">Лог действий</button></div>
     <div id="pnew">
       <ul>
+        <li><b>Мобильный интерфейс.</b> Улучшено отображение на смартфонах, удобные кнопки и поля ввода.</li>
         <li><b>Мини-игры в одном месте.</b> Кнопка «🎮 Игры» в верхнем меню теперь открывает шторку, где находятся кликер про Лёху Буссоля и новая игра с Никитой Готиным.</li>
         <li><b>Тайный Санта.</b> Старосты могут запустить Санту заранее. Студенты увидят кнопку Санты только с 22 декабря.</li>
         <li><b>Кандидаты для опроса.</b> В панели старосты появилась карточка, которая автоматически вычисляет, у кого больше всего ПН за текущую неделю (без учета прошлых долгов), чтобы знать, кого вызвать к доске.</li>
@@ -305,7 +362,27 @@ label.chk input{width:auto}
         </div>
       </div>
 
+
+      <!-- Игра 3: Помидоры -->
+      <div class="card" style="margin:0; border-top-color:#d9372b">
+        <h2>🍅 Закидать помидорами</h2>
+        <p class="mute" style="margin:0 0 10px">Выберите жертву. При следующем входе она увидит, кто и сколько раз в неё попал.</p>
+        <select id="tomWho" aria-label="Кого закидать"></select>
+        <div class="row" style="margin-top:10px">
+          <button class="main" id="tomThrow" type="button" style="background:#d9372b;border-color:#d9372b">Бросить 🍅</button>
+          <strong id="tomMsg" aria-live="polite"></strong>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
+
+<div id="tomPanel" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="mbox" style="text-align:center">
+    <div style="font-size:56px">🍅</div>
+    <h2 id="tomTitle">В вас кинули помидоры!</h2>
+    <p id="tomText" style="margin:10px 0 16px"></p>
+    <button class="main" id="tomOk" type="button" style="width:100%">Вытереться и жить дальше</button>
   </div>
 </div>
 
@@ -358,26 +435,38 @@ function describe(m){
   return res;
 }
 
-let me=null,isHead=false,role="user",seeded=false,dirty=false,db={students:[],marks:{},users:{},base:{},santa:{},log:{}},undo=[],lastWork=workDate();
+let tab=null,me=null,isHead=false,role="user",seeded=false,dirty=false,db={students:[],marks:{},users:{},base:{},santa:{},tom:{},cfg:{},log:{}},undo=[],lastWork=workDate();
 
+const getLimit=()=>Math.min(10,Math.max(1,parseInt(db.cfg&&db.cfg.limit)||2));
 const base=()=>DB_URL.replace(/\/$/,"")+"/journal";
 function save(){lsSet("absence:db",JSON.stringify(db))}
 function net(path,val){
   if(!DB_URL)return;
   return fetch(base()+path+".json",{method:val===null?"DELETE":"PUT",body:val===null?undefined:JSON.stringify(val)}).catch(()=>{});
 }
+const RENAMES={"Каланцёр Дарья":"Каланцер Дарья"};let migrated=false;
+function migrate(){
+  db.students=[...new Set(db.students.map(n=>RENAMES[n]||n))];
+  for(const[o,w]of Object.entries(RENAMES)){
+    const ok=k(o),nk=k(w);
+    for(const m of[db.users,db.base,db.santa,db.tom])if(m[ok]!==undefined){if(m[nk]===undefined)m[nk]=m[ok];delete m[ok];migrated=true}
+    Object.keys(db.marks).forEach(d=>{const x=db.marks[d];if(x&&x[ok]!==undefined){if(x[nk]===undefined)x[nk]=x[ok];delete x[ok];migrated=true}});
+    Object.keys(db.santa).forEach(a=>{if(db.santa[a]===o){db.santa[a]=w;migrated=true}});
+  }
+}
 async function pull(){
   let j=null;
   if(DB_URL){try{j=await (await fetch(base()+".json")).json()}catch(e){}}
   else{try{j=JSON.parse(lsGet("absence:db"))}catch(e){}}
-  if(j)db={students:j.students||[],marks:j.marks||{},users:j.users||{},base:j.base||{},santa:j.santa||{},log:j.log||{}};
+  if(j)db={students:j.students||[],marks:j.marks||{},users:j.users||{},base:j.base||{},santa:j.santa||{},tom:j.tomatoes||{},cfg:j.cfg||{},log:j.log||{}};
+  migrate();
   if(!db.students.length){db.students=[...DEFAULT_STUDENTS];seeded=true}
 }
 const getMark=(d,n)=>(db.marks[d]||{})[k(n)];
 function putMark(d,n){save();const v=getMark(d,n);net("/marks/"+d+"/"+encodeURIComponent(k(n)),v===undefined?null:v)}
 function putDay(d){save();net("/marks/"+d,db.marks[d]||null)}
 function putStudents(){save();net("/students",db.students)}
-function writeMark(d,n,p,by,msg){db.marks[d]=db.marks[d]||{};db.marks[d][k(n)]={p,by,t:Date.now(), msg:msg||""};putMark(d,n)}
+function writeMark(d,n,p,by,msg,c){db.marks[d]=db.marks[d]||{};db.marks[d][k(n)]={p,by,t:Date.now(), msg:msg||"",...(c?{c}:{})};putMark(d,n)}
 function dropMark(d,n){
   if(!db.marks[d])return;delete db.marks[d][k(n)];
   if(!Object.keys(db.marks[d]).length)delete db.marks[d];
@@ -421,9 +510,10 @@ $("who").onchange=updateHint;
 $("tabU").onclick=()=>setRole("user");$("tabH").onclick=()=>setRole("head");
 $("loginForm").onsubmit=async e=>{
   e.preventDefault();
-  const v=$("who").value,pw=$("code").value,err=t=>{$("err").textContent=t};
+  const v=$("who").value,pw=$("code").value,
+    r=(role==="user"&&HEAD_CODE&&pw===HEAD_CODE&&HEADS.some(h=>norm(h)===norm(v)))?"head":role,err=t=>{$("err").textContent=t};
   if(!v){err("Выберите себя в списке.");return}
-  if(role==="head"){
+  if(r==="head"){
     if(!HEADS.map(norm).includes(norm(v))){err("Этого имени нет в списке старост.");return}
     if(HEAD_CODE&&pw!==HEAD_CODE){err("Неверный пароль.");return}
   }else{
@@ -439,17 +529,19 @@ $("loginForm").onsubmit=async e=>{
       logAct("создал личный пароль",v,v);
     }
   }
-  rememberSet({n:v,r:role},$("rem").checked);
-  await start(v,role);
-  logAct("вошёл как "+(role==="head"?"староста":"студент"));
+  rememberSet({n:v,r},$("rem").checked);
+  await start(v,r);
+  logAct("вошёл как "+(r==="head"?"староста":"студент"));
 };
-$("logout").onclick=()=>{rememberClear();me=null;$("code").value="";$("gcode").value="";fillWho();show()};
+$("logout").onclick=()=>{rememberClear();me=null;tab=null;$("code").value="";$("gcode").value="";fillWho();show()};
 
 async function start(name,r){
   me=name;isHead=r==="head";dirty=false;await pull();
   if(isHead&&seeded){putStudents();seeded=false}
+  if(isHead&&migrated){putStudents();net("/marks",db.marks);net("/users",db.users);net("/base",db.base);net("/santa",db.santa);migrated=false}
+  tab=null;
   if(isHead){const lim=Date.now()-60*864e5;Object.keys(db.log).forEach(x=>{if(db.log[x].t<lim){delete db.log[x];net("/log/"+x,null)}})}
-  $("date").value=workDate();lastWork=workDate();show();
+  $("date").value=workDate();lastWork=workDate();show();checkTom();
 }
 
 function show(){
@@ -457,10 +549,9 @@ function show(){
   $("app").classList.toggle("hidden",!me);
   if(!me)return;
   $("user").textContent=me+(isHead?" · староста":" · студент");
-  $("head").classList.toggle("hidden",!isHead);
-  $("user-view").classList.toggle("hidden",isHead);
+  if(!tab)tab=isHead?"today":"mark";
+  applyTab();
   
-  // Логика отображения кнопки Санты (С 22 декабря или для старосты)
   const d = new Date();
   const isSantaTime = d.getMonth() === 11 && d.getDate() >= 22;
   $("santaBtn").classList.toggle("hidden", !(isHead || isSantaTime));
@@ -527,7 +618,7 @@ $("csv").onclick=()=>{
 };
 
 const myName=()=>db.students.find(s=>norm(s)===norm(me));
-const STU_OPTS='<option value="+">Присутствую</option>'+CODES.map(c=>`<option value="${c}">${LABELS[c]}</option>`).join("");
+const STU_OPTS='<option value="+">Я на паре</option>'+CODES.map(c=>`<option value="${c}">${LABELS[c]}</option>`).join("");
 $("mall").innerHTML=STU_OPTS;
 $("mpairs").innerHTML=[0,1,2,3].map(i=>`<div><label class="mute" for="mp${i}">${i+1} пара</label><select id="mp${i}">${STU_OPTS}</select></div>`).join("");
 const stuVals=()=>[0,1,2,3].map(i=>$("mp"+i).value);
@@ -535,6 +626,7 @@ const stuVals=()=>[0,1,2,3].map(i=>$("mp"+i).value);
 function updatePnBox() {
   const hasPn = $("mall").value === "ПН" || stuVals().includes("ПН");
   $("pnReasonBox").classList.toggle("hidden", !hasPn);
+  paintChips();
 }
 
 $("mall").onchange=()=>{dirty=true;[0,1,2,3].forEach(i=>$("mp"+i).value=$("mall").value); updatePnBox();};
@@ -547,10 +639,11 @@ $("mall").onchange=()=>{dirty=true;[0,1,2,3].forEach(i=>$("mp"+i).value=$("mall"
 $("msave").onclick=async()=>{
   const n=myName(),d=workDate();if(!n)return;
   await pull();
-  if(getMark(d,n)){dirty=false;render();return}
+  const old=getMark(d,n);
+  if(old&&!isHead&&(old.by==="h"||(old.c||1)>=getLimit())){dirty=false;render();return}
   const p=stuVals().map(v=>v==="+"?"":v);
   const msg = p.includes("ПН") ? $("pnReason").value.trim() : "";
-  writeMark(d,n,p,"s", msg);
+  writeMark(d,n,p,"s", msg,(old?(old.c||1):0)+1);
   logAct("за "+fmt(d)+": "+describe({p, msg})+(hoursOf({p})?" ("+hoursOf({p})+" ч)":""),n);
   dirty=false;render();
 };
@@ -566,13 +659,28 @@ $("saveBase").onclick = async () => {
   render();
 };
 
-function render(){if(!me)return;isHead?renderHead():renderUser()}
+const NAVS={head:[["today","📋","Сегодня"],["stats","📊","Статистика"],["set","⚙️","Настройки"],["self","🙋","Я"]],user:[["mark","✅","Отметка"],["me","📈","Мои"],["grp","👥","Группа"]]};
+function applyTab(){
+  const self=isHead&&tab==="self";
+  $("head").classList.toggle("hidden",!isHead||self);
+  $("user-view").classList.toggle("hidden",isHead&&!self);
+  document.querySelectorAll("[data-t]").forEach(e=>e.classList.toggle("tabhide",!((self&&e.closest("#user-view"))||e.dataset.t.split(" ").includes(tab))));
+  $("bnav").innerHTML=NAVS[isHead?"head":"user"].map(([id,ic,l])=>`<button type="button" class="${id===tab?"on":""}" data-tab="${id}"><span>${ic}</span>${l}</button>`).join("");
+}
+$("bnav").onclick=e=>{const b=e.target.closest("button");if(b){tab=b.dataset.tab;scrollTo(0,0);show()}};
+const shiftDay=n=>{const d=new Date($("date").value+"T12:00");d.setDate(d.getDate()+n);$("date").value=ymd(d);render()};
+$("dPrev").onclick=()=>shiftDay(-1);$("dNext").onclick=()=>shiftDay(1);
+const CHIPS=[["+","✅","Я на паре"],["Б","Б","болезнь"],["ПН","ПН","неизвестна"],["Н","Н","не будет"],["УП","УП","по заявлению"],["СБ","СБ","сборы"],["ОМ","ОМ","мероприятие"],["Ц","Ц","ЦКВР"],["ПР","ПР","физра, здоровье"]];
+$("chips").innerHTML=CHIPS.map(([v,a,b])=>`<button type="button" class="chip" data-v="${v}"><b>${a}</b><small>${b}</small></button>`).join("");
+$("chips").onclick=e=>{const c=e.target.closest(".chip");if(!c||c.disabled)return;$("mall").value=c.dataset.v;$("mall").onchange()};
+function paintChips(){const ps=stuVals(),u=ps.every(x=>x===ps[0])?ps[0]:null;document.querySelectorAll("#chips .chip").forEach(c=>{c.classList.toggle("on",c.dataset.v===u);c.disabled=$("msave").disabled})}
+function render(){if(!me)return;isHead&&tab!=="self"?renderHead():renderUser()}
 const editing=new Set();
 function opts(allowNone){
   return '<option value="">—</option>'+CODES.map(c=>`<option>${c}</option>`).join("");
 }
 function editor(n,cur){
-  const p=cur?pairsOf(cur):null,box=document.createElement("div");box.className="ed";
+  const p=cur?pairsOf(cur):null,box=document.createElement("div");box.className="ed eg";
   for(let i=0;i<4;i++){
     const w=document.createElement("div"),sel=document.createElement("select");
     w.innerHTML=`<label>${i+1} пара</label>`;
@@ -599,8 +707,8 @@ function clearBtn(n){const b=document.createElement("button");b.textContent="О�
 function renderHead(){
   const d=$("date").value,own=n=>norm(n)===norm(me);
   $("undo").disabled=!undo.length;
+  if(document.activeElement!==$("limitIn"))$("limitIn").value=getLimit();
 
-  // Вычисляем лидеров ПН за ТЕКУЩУЮ неделю (без учета прошлых долгов)
   const now = new Date();
   const day = now.getDay();
   const diff = now.getDate() - day + (day === 0 ? -6 : 1);
@@ -608,7 +716,7 @@ function renderHead(){
   const sun = new Date(mon.getTime()); sun.setDate(mon.getDate() + 6);
   const monStr = ymd(mon), sunStr = ymd(sun);
   
-  const wStats = stats(monStr, sunStr, true); // true = игнорировать старые базовые часы
+  const wStats = stats(monStr, sunStr, true);
   let maxPn = 0, weeklyLeaders = [];
   for (const [student, data] of Object.entries(wStats)) {
     const pn = data.by["ПН"] || 0;
@@ -625,7 +733,6 @@ function renderHead(){
     $("askList").innerHTML = `<p class="mute">На этой неделе (с ${fmt(monStr)}) пропусков ПН пока нет.</p>`;
   }
 
-  /* моя отметка */
   const mine=db.students.find(own),mt=$("mytbl").tBodies[0];mt.innerHTML="";
   $("mycard").classList.toggle("hidden",!mine);
   if(mine){
@@ -691,8 +798,8 @@ function renderHead(){
     const nm=document.createElement("span");nm.textContent=n;
     const sel=document.createElement("select");
     sel.setAttribute("aria-label","Отметить: "+n);
-    sel.innerHTML='<option value="">отметить за него…</option>'+CODES.map(c=>`<option>${c}</option>`).join("");
-    sel.onchange=()=>{if(sel.value)headSet(n,Array(4).fill(sel.value))};
+    sel.innerHTML='<option value="">отметить за него…</option><option value="+">✅ Присутствует</option>'+CODES.map(c=>`<option>${c}</option>`).join("");
+    sel.onchange=()=>{if(sel.value)headSet(n,sel.value==="+"?emptyP():Array(4).fill(sel.value))};
     row.append(nm,sel);ul.appendChild(row);
   });
 
@@ -732,20 +839,22 @@ function renderUser(){
   $("mdate").textContent=fmt(d);
   $("mark-card").classList.toggle("hidden",!n);
   if(!n){$("mine").innerHTML='<p class="mute">Вас нет в списке группы. Попросите старосту добавить вас.</p>';return}
-  const cur=getMark(d,n),locked=!!cur;
+  const cur=getMark(d,n),left=cur?Math.max(0,getLimit()-(cur.c||1)):getLimit(),locked=!!cur&&!isHead&&(cur.by==="h"||left<=0);
   $("mstate").innerHTML=cur
-    ?`<span class="ok">${cur.by==="h"?"Староста отметил":"Вы внесли отметку"}:</span> `+describe(cur)+(hoursOf(cur)?` (${hoursOf(cur)} ч)`:"")+'<div class="mute">Изменить дальше может только староста.</div>'
-    :'<span class="pn">Вы ещё не отметились.</span> Отметку можно внести один раз.';
+    ?`<span class="ok">${cur.by==="h"?"Староста отметил":"Вы внесли отметку"}:</span> `+describe(cur)+(hoursOf(cur)?` (${hoursOf(cur)} ч)`:"")+'<div class="mute">'+(locked?"Изменить дальше может только староста.":"Можно изменить ещё: "+left+" р.")+'</div>'
+    :'<span class="pn">Вы ещё не отметились.</span> Отметку можно сохранить до '+getLimit()+' раз в день.';
   
   if(!dirty){
     const p=cur?pairsOf(cur):emptyP();
     [0,1,2,3].forEach(i=>$("mp"+i).value=p[i]||"+");
     $("mall").value=p.every(x=>x===p[0])?(p[0]||"+"):"+";
+    $("pairsDet").open=!p.every(x=>x===p[0]);
     $("pnReasonBox").classList.toggle("hidden", !p.includes("ПН"));
     $("pnReason").value = cur && cur.msg ? cur.msg : "";
   }
   
   ["mall","mp0","mp1","mp2","mp3","msave","pnReason"].forEach(id=>$(id).disabled=locked);
+  paintChips();
 
   const b = db.base[k(n)];
   const isBaseSaved = !!b;
@@ -795,6 +904,10 @@ setInterval(async()=>{
   rollover();
 },15000);
 
+$("limitBtn").onclick=()=>{
+  const v=Math.min(10,Math.max(1,parseInt($("limitIn").value)||2));
+  db.cfg.limit=v;save();net("/cfg/limit",v);logAct("изменил лимит отметок в день: "+v);render();
+};
 $("rpwBtn").onclick=()=>{
   const n=$("rpw").value;if(!n)return;
   if(!db.users[k(n)]){$("rpwMsg").textContent=n+": пароль ещё не создан.";return}
@@ -836,15 +949,15 @@ function renderSanta() {
   if (isHead) {
       box.innerHTML = hasSanta 
           ? `<p class="ok" style="margin-top:0">Жребий брошен! Каждый студент теперь видит свою цель.</p>
-             <button class="main" id="santaReset">Сбросить Санту</button>
+             <button class="main" id="santaReset" style="width:100%">Сбросить Санту</button>
              <p class="mute" style="margin-top:10px">Вы, как староста, тоже участвуете. Ваша цель: <b style="color:var(--ink)">${db.santa[k(me)]}</b></p>`
           : `<p class="mute" style="margin-top:0">Сгенерировать случайное распределение для всей группы?</p>
-             <button class="main" id="santaGen">Запустить Санту</button>`;
+             <button class="main" id="santaGen" style="width:100%">Запустить Санту</button>`;
       if($("santaGen")) $("santaGen").onclick = generateSanta;
       if($("santaReset")) $("santaReset").onclick = clearSanta;
   } else {
       box.innerHTML = hasSanta
-          ? `<div style="font-size:18px; text-align:center; padding: 20px">Вы дарите подарок:<br><b style="font-size:24px; color:var(--acc)">${db.santa[k(me)]||"Ошибка"}</b></div>`
+          ? `<div style="font-size:18px; text-align:center; padding: 20px">Вы дарите подарок:<br><b style="font-size:22px; color:var(--acc)">${db.santa[k(me)]||"Ошибка"}</b></div>`
           : `<p class="mute" style="margin-top:0">Староста еще не запустил Тайного Санту. Ждите!</p>`;
   }
 }
@@ -941,6 +1054,35 @@ $("installBtn").onclick = async () => {
   }
 };
 
+/* ===== Помидоры ===== */
+function fall(n=10){
+  const b=document.createElement("div");b.className="tomfall";let h="";
+  for(let i=0;i<n;i++){
+    const x=12+Math.random()*76,y=15+Math.random()*65,d=(i*.3+Math.random()*.2).toFixed(2)+"s",z=150+Math.random()*130|0;
+    h+=`<span class="fly" style="left:${x}vw;top:${y}vh;--d:${d}">🍅</span><i class="splat" style="left:${x}vw;top:${y}vh;--d:${d};--s:${z}px"></i>`;
+  }
+  b.innerHTML=h;document.body.appendChild(b);setTimeout(()=>b.remove(),n*300+5500);
+}
+function fillTom(){const v=$("tomWho").value;$("tomWho").innerHTML=db.students.map(n=>`<option>${n}</option>`).join("");if(v)$("tomWho").value=v;
+  const o=db.tom[k(myName()||me)];$("tomMsg").textContent=o&&o.n?"В вас попали: "+o.n+" 🍅":""}
+let tomBusy=false;
+$("tomThrow").onclick=async()=>{
+  const n=$("tomWho").value;if(!n||tomBusy)return;tomBusy=true;setTimeout(()=>tomBusy=false,1500);
+  await pull();const key=k(n),o=db.tom[key]||{n:0,seen:0,by:{}};o.by=o.by||{};
+  o.n=(o.n||0)+1;o.by[k(me)]=(o.by[k(me)]||0)+1;o.last=me;o.t=Date.now();
+  db.tom[key]=o;save();net("/tomatoes/"+encodeURIComponent(key),o);
+  fall(2);$("tomMsg").textContent="Попал в "+n+"! 🍅";
+};
+$("gamesBtn").addEventListener("click",async()=>{await pull();fillTom()});
+function checkTom(){
+  const n=myName();if(!n)return;const key=k(n),o=db.tom[key];
+  if(!o||(o.n||0)<=(o.seen||0))return;
+  const fresh=o.n-(o.seen||0),who=Object.entries(o.by||{}).map(([a,c])=>a.replace(/_/g,".")+(c>1?" ×"+c:"")).join(", ");
+  $("tomText").innerHTML=`Новых попаданий: <b>${fresh}</b> 🍅<br>Всего: ${o.n}<br><span class="mute">Бросали: ${who||"аноним"}. Последним был ${o.last||"аноним"}.</span>`;
+  $("tomPanel").classList.remove("hidden");fall();
+  o.seen=o.n;save();net("/tomatoes/"+encodeURIComponent(key)+"/seen",o.n);
+}
+$("tomOk").onclick=()=>$("tomPanel").classList.add("hidden");
 /* ===== Чёрно-белый режим ===== */
 let bwMode = lsGet("absence:bw") === "1";
 if(bwMode) document.body.classList.add("bw");
@@ -984,5 +1126,3 @@ fillWho();
 </script>
 </body>
 </html>
-
-```
