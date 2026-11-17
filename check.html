@@ -1,0 +1,21 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Проверка установки</title>
+<style>body{font:15px/1.5 system-ui;background:#111;color:#eee;padding:16px}h1{font-size:18px}.r{padding:10px 12px;margin:8px 0;border-radius:10px;background:#1d2330;word-break:break-all}.ok{border-left:5px solid #2ecc71}.bad{border-left:5px solid #e74c3c}small{color:#9aa}</style></head><body>
+<h1>Проверка установки приложения</h1><div id="o">Проверяю…</div>
+<script>
+const o=document.getElementById("o");const add=(ok,t,s)=>{o.insertAdjacentHTML("beforeend",`<div class="r ${ok?"ok":"bad"}">${ok?"✅":"❌"} ${t}${s?"<br><small>"+s+"</small>":""}</div>`)};
+(async()=>{o.innerHTML="";
+add(location.protocol==="https:","Адрес по https",location.href);
+const base=location.href.replace(/[^/]*$/,"");
+for(const f of["manifest.webmanifest","sw.js","icon-192.png","icon-512.png","icon-maskable-512.png","index.html"]){
+ try{const r=await fetch(base+f,{cache:"no-store"});add(r.ok,f+" — "+r.status,r.headers.get("content-type")||"")}catch(e){add(false,f,String(e))}}
+try{const m=await (await fetch(base+"manifest.webmanifest",{cache:"no-store"})).json();
+ add(m.start_url==="./","start_url = "+m.start_url,"должно быть ./");
+ add(m.icons&&m.icons.some(i=>i.src==="icon-512.png"),"иконки: "+(m.icons||[]).map(i=>i.src).join(", "),"должны быть icon-192.png, icon-512.png, icon-maskable-512.png (без / и app-icon)");
+ add(m.display==="standalone","display = "+m.display)}catch(e){add(false,"manifest не читается как JSON",String(e))}
+try{const t=await (await fetch(base+"sw.js",{cache:"no-store"})).text();add(/journal-v5/.test(t),"sw.js — версия журнала",/journal-v5/.test(t)?"новая":"старый файл, замените")}catch(e){}
+try{const h=await (await fetch(base+"index.html",{cache:"no-store"})).text();
+ add(h.includes('register("./sw.js"'),"index.html регистрирует ./sw.js",h.includes('register("./sw.js"')?"новый":"старый index.html — замените");
+ add(h.includes('href="manifest.webmanifest"'),"index.html подключает манифест")}catch(e){}
+try{const rs=await navigator.serviceWorker.getRegistrations();add(rs.length>0,"Service worker в браузере: "+rs.length,rs.map(r=>r.scope).join("; "))}catch(e){add(false,"service worker недоступен",String(e))}
+})();
+</script></body></html>
