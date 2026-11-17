@@ -321,6 +321,103 @@ html.glass-theme[data-theme="dark"] .nav-ind.drag { box-shadow: inset 2px 2px 4p
 /* кнопка отмены Санты */
 button.danger { background: color-mix(in srgb, var(--bad) 14%, transparent) !important; color: var(--bad) !important; border: 1px solid color-mix(in srgb, var(--bad) 45%, transparent); box-shadow: none !important; }
 
+/* ===== РЕЖИМ БЕЗ СТЕКЛА: GOOGLE PIXEL (Material You) ===== */
+html:not(.glass-theme)[data-theme="light"] {
+  --page: #f9f9ff; --card: #eceef6; --bg: #eceef6; --soft: #dfe3ee; --ink: #191c20; --mute: #5b5f69; --line: #d3d7e2;
+  --acc: #0b57d0; --acc-ink: #ffffff; --bad: #ba1a1a; --ok: #146c2e; --c-pn: #ffdad6; --shadow: none;
+  --px-sec: #d3e3fd; --px-onsec: #041e49; --px-high: #e4e7f1; --px-err: #ffdad6; --px-onerr: #410002;
+}
+html:not(.glass-theme)[data-theme="dark"] {
+  --page: #111318; --card: #1d2025; --bg: #1d2025; --soft: #2e3138; --ink: #e3e2e9; --mute: #b0b4be; --line: #2f333b;
+  --acc: #a8c7fa; --acc-ink: #062e6f; --bad: #ffb4ab; --ok: #7fd897; --c-pn: #5a1f1b; --shadow: none;
+  --px-sec: #3b4a68; --px-onsec: #d3e3fd; --px-high: #272a31; --px-err: #93000a; --px-onerr: #ffdad6;
+}
+html:not(.glass-theme) body { font-family: "Google Sans Text","Google Sans","Product Sans",Roboto,system-ui,-apple-system,sans-serif; letter-spacing: 0; }
+html:not(.glass-theme) h1 { font-weight: 500; letter-spacing: 0; }
+html:not(.glass-theme) h2 { font-size: 14px; font-weight: 600; text-transform: none; letter-spacing: .01em; color: var(--acc); margin-bottom: 12px; }
+html:not(.glass-theme) th { text-transform: none; font-size: 12px; font-weight: 500; letter-spacing: .01em; }
+html:not(.glass-theme) .card { border-radius: 28px; padding: 18px; box-shadow: none; }
+html:not(.glass-theme) .set-group.card { border-radius: 28px !important; padding: 0 !important; }
+html:not(.glass-theme) .set-summary { background: transparent; padding: 18px; }
+html:not(.glass-theme) .card[style*="dashed"], html:not(.glass-theme) #santaCard { border: 0 !important; background: var(--px-sec) !important; }
+html:not(.glass-theme) #santaCard h2, html:not(.glass-theme) #santaCard .mute { color: var(--px-onsec); }
+html:not(.glass-theme) .floatBox { background: var(--px-high); border: 0 !important; border-radius: 28px; box-shadow: 0 8px 28px rgba(0,0,0,.22); }
+
+/* поля */
+html:not(.glass-theme) input, html:not(.glass-theme) select, html:not(.glass-theme) textarea { background: var(--soft); border: 0; border-radius: 16px; min-height: 48px; padding: 10px 16px; }
+html:not(.glass-theme) textarea { border-radius: 20px; }
+html:not(.glass-theme) :focus-visible { outline: 2px solid var(--acc); outline-offset: 0; }
+
+/* кнопки: пилюли + ripple */
+html:not(.glass-theme) button { border-radius: 999px; font-weight: 500; letter-spacing: .01em; overflow: hidden; }
+html:not(.glass-theme) button:not(.fab) { position: relative; }
+html:not(.glass-theme) button:active:not(:disabled) { transform: none; }
+html:not(.glass-theme) button.main { background: var(--acc); color: var(--acc-ink); box-shadow: none; min-height: 44px; padding: 8px 22px; }
+html:not(.glass-theme) button.quiet { color: var(--acc); padding: 0 12px; }
+html:not(.glass-theme) button.danger { background: var(--px-err) !important; color: var(--px-onerr) !important; border: 0 !important; min-height: 44px; }
+html:not(.glass-theme) .chip { border-radius: 18px; }
+html:not(.glass-theme) .chip.on { background: var(--px-sec); color: var(--px-onsec); box-shadow: none; outline: 2px solid var(--acc); outline-offset: -2px; }
+html:not(.glass-theme) .tag { border-radius: 8px; background: var(--px-sec); color: var(--px-onsec); }
+html:not(.glass-theme) .warn, html:not(.glass-theme) .caldet { border-radius: 20px; }
+html:not(.glass-theme) .tabs, html:not(.glass-theme) .day-toggle { border-radius: 999px; background: var(--soft); }
+html:not(.glass-theme) .tabs button.main, html:not(.glass-theme) .day-toggle button.active { background: var(--px-sec); color: var(--px-onsec); box-shadow: none; font-weight: 600; }
+html:not(.glass-theme) .cal button.d { border-radius: 999px; }
+html:not(.glass-theme) .cal button.d.sel { outline-color: var(--acc); }
+.ripple { position: absolute; border-radius: 50%; background: currentColor; opacity: .18; transform: scale(0); animation: rip .6s ease-out forwards; pointer-events: none; }
+@keyframes rip { to { transform: scale(1); opacity: 0; } }
+
+/* нижнее меню, кнопка-меню, шторка */
+html:not(.glass-theme) #bnav { background: var(--px-high); border-radius: 28px; box-shadow: 0 2px 10px rgba(0,0,0,.14); }
+html:not(.glass-theme) .nav-ind { background: color-mix(in srgb, var(--acc) 20%, transparent); }
+html:not(.glass-theme) .fab { background: var(--acc); color: var(--acc-ink); border-radius: 20px; box-shadow: 0 3px 10px rgba(0,0,0,.25), 0 1px 3px rgba(0,0,0,.2); }
+html:not(.glass-theme) .fab i { background: var(--acc-ink); }
+html:not(.glass-theme) #sheetScrim { background: rgba(0,0,0,.32); -webkit-backdrop-filter: none; backdrop-filter: none; }
+html:not(.glass-theme) .sheet { background: var(--px-high); border-radius: 28px; box-shadow: 0 10px 32px rgba(0,0,0,.28); }
+html:not(.glass-theme) .tile { background: var(--px-sec); color: var(--px-onsec); border-radius: 22px; }
+html:not(.glass-theme) .tile.out { background: var(--px-err); color: var(--px-onerr); }
+
+/* переключатель режима (только для главного старосты) */
+.modeSw { display: flex; gap: 4px; padding: 4px; margin-top: 12px; border-radius: 999px; background: var(--soft); }
+.sheet .modeSw button { flex: 1; min-height: 38px; padding: 0 10px; border-radius: 999px; background: none; box-shadow: none; color: var(--mute); font-size: 13px; font-weight: 500; transition: background .25s, color .25s, box-shadow .25s; }
+.sheet .modeSw button.on { background: var(--card); color: var(--ink); font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,.14); }
+html.glass-theme .sheet .modeSw button.on { background: var(--g-fill); box-shadow: var(--g-inner), 0 2px 8px rgba(0,0,0,.12); }
+html:not(.glass-theme) .sheet .modeSw button.on { background: var(--px-sec); color: var(--px-onsec); box-shadow: none; }
+
+/* ===== КОМПАКТНЫЙ РЕЖИМ: только выбор пропуска и календарь ===== */
+.tile[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--acc) !important; }
+/* карточка отметки */
+html.compact #mark-card { padding: 10px 12px; }
+html.compact #mark-card .day-toggle { margin-bottom: 8px; }
+html.compact #mark-card .day-toggle button { min-height: 28px; padding: 0 12px; font-size: 12px; }
+html.compact #mark-card h2 { font-size: 11px; margin: 0 0 4px; }
+html.compact #mark-card #mstate { margin-bottom: 6px; font-size: 12.5px; }
+html.compact #mark-card #mstate .mute { display: none; }
+html.compact #mark-card .chips { gap: 4px; margin-top: 4px; }
+html.compact #mark-card .chip { min-height: 32px; border-radius: 10px; font-size: 12px; }
+html.compact #mark-card .fold { margin-top: 4px; }
+html.compact #mark-card summary { font-size: 12px; padding: 3px 0; }
+html.compact #mark-card input, html.compact #mark-card select { min-height: 32px; padding: 3px 10px; font-size: 13px; border-radius: 10px; }
+html.compact #mark-card .row { gap: 6px; }
+html.compact #mark-card #msave { min-height: 34px; margin-top: 8px; padding: 4px 16px; font-size: 13px; }
+/* всё на одной странице: только отметка + календарь */
+html.onepage-stu #bnav, html.onepage-stu #navLens { display: none !important; }
+html.onepage .wrap { padding: calc(8px + env(safe-area-inset-top)) 10px 76px; }
+html.onepage #user-view { display: block; }
+html.onepage .card { margin-bottom: 8px; }
+/* календарь */
+html.compact #calU { padding: 8px 10px; }
+html.compact .calbox { max-width: 250px; }
+html.compact .calhd { margin-bottom: 2px; }
+html.compact .calhd b { font-size: 12.5px; }
+html.compact .calhd button { min-height: 26px; min-width: 32px; font-size: 14px; padding: 0; }
+html.compact .cal { gap: 2px; }
+html.compact .cal .dh { font-size: 9.5px; margin-bottom: 0; }
+html.compact body .cal button.d { height: 26px; font-size: 11.5px; border-radius: 8px; min-height: 0; padding: 0; }
+html.compact .cal button.d small { font-size: 8px; min-height: 8px; }
+html.compact .cleg { display: none; }
+html.compact .calsum { font-size: 11px; margin-top: 4px; text-align: center; }
+html.compact .caldet { padding: 6px 8px; font-size: 12px; margin-top: 4px; }
+
 @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 .pulse-anim { animation: pop 0.4s ease-out; }
 </style>
@@ -359,11 +456,14 @@ button.danger { background: color-mix(in srgb, var(--bad) 14%, transparent) !imp
   <button type="button" id="menuFab" class="fab" aria-label="Меню" aria-expanded="false" aria-controls="sheet"><i></i><i></i><i></i></button>
   <div id="sheetScrim"></div>
   <aside id="sheet" class="sheet" aria-hidden="true" aria-label="Меню">
-    <div class="sheet-head"><h1>Журнал пропусков</h1><div class="mute" id="user"></div></div>
+    <div class="sheet-head"><h1>Журнал пропусков</h1><div class="mute" id="user"></div>
+      <div id="modeSwitch" class="modeSw hidden" role="group" aria-label="Режим"><button type="button" data-m="head">👑 Староста</button><button type="button" data-m="user">🎓 Учащийся</button></div>
+    </div>
     <div class="sheet-grid">
       <button type="button" class="tile inst hidden" aria-label="Установить приложение"><span>⬇️</span>Установить</button>
       <button type="button" id="infoBtn" class="tile"><span>ℹ️</span>Инфо и лог</button>
       <button type="button" id="glassToggle" class="tile" title="Включить/выключить стекло"><span>✨</span>Стекло</button>
+      <button type="button" id="compactBtn" class="tile" aria-pressed="false"><span>📐</span>Компактно</button>
       <button type="button" id="legendBtn" class="tile" aria-expanded="false"><span>❓</span>Обозначения</button>
       <button type="button" id="logout" class="tile out"><span>🚪</span>Выйти</button>
     </div>
@@ -600,7 +700,7 @@ function applyAutoTheme() {
   const theme = (h >= 7 && h < 18) ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", theme);
   const meta = document.getElementById("theme-color-meta");
-  if(meta) meta.setAttribute("content", theme === "light" ? "#f6f6f4" : "#0d1118");
+  if(meta) meta.setAttribute("content", theme === "light" ? "#f9f9ff" : "#111318");
 }
 applyAutoTheme();
 setInterval(applyAutoTheme, 60000);
@@ -623,6 +723,13 @@ document.addEventListener("DOMContentLoaded", () => {
   applyGlass();
 });
 
+let isCompact = lsGet("absence:compact") === "on";
+function applyCompact(){
+  document.documentElement.classList.toggle("compact", isCompact);
+  const b = document.getElementById("compactBtn"); if(b) b.setAttribute("aria-pressed", isCompact ? "true" : "false");
+}
+applyCompact();
+
 const CODES=["Б","УП","ПН","Н","СБ","ОМ","Ц","ПР"];
 const LABELS={"Б":"Б — болезнь (весь день)","УП":"УП — по заявлению","ПН":"ПН — неизвестна (прогул)","Н":"Н — меня не будет","СБ":"СБ — спортивные сборы","ОМ":"ОМ — общественные мероприятия","Ц":"Ц — ЦКВР","ПР":"ПР — присутствовал, не участвовал"};
 const $=id=>document.getElementById(id);
@@ -631,6 +738,8 @@ const pad=n=>String(n).padStart(2,"0");
 const ymd=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
 const fmt=s=>s.split("-").reverse().join(".");
 const k=n=>n.replace(/[.$#\[\]\/]/g,"_");
+const _short=n=>{const p=String(n).trim().split(/\s+/);return p.length>1?p[0]+" "+p[1][0]+".":String(n)};
+const nmc=n=>n;
 
 function workDate(){
   const d=new Date();
@@ -795,6 +904,7 @@ async function start(name,r){
   if(isHead&&migrated){putStudents();net("/marks",db.marks);net("/users",db.users);net("/base",db.base);migrated=false}
   tab=null;
   if(isHead){const lim=Date.now()-60*864e5;Object.keys(db.log).forEach(x=>{if(db.log[x].t<lim){delete db.log[x];net("/log/"+x,null)}})}
+  if(norm(name)===norm(SUPER_ADMIN) && lsGet("absence:mode")==="user") isHead=false;
   $("date").value=workDate();lastWork=workDate();show();
 }
 
@@ -803,6 +913,9 @@ function show(){
   $("app").classList.toggle("hidden",!me);
   if(!me){$("bnav").innerHTML="";return}
   $("user").textContent=me+(isHead?" · староста":" · студент");
+  const sup=norm(me)===norm(SUPER_ADMIN);
+  $("modeSwitch").classList.toggle("hidden",!sup);
+  if(sup)[...$("modeSwitch").children].forEach(b=>{const on=(b.dataset.m==="head")===isHead;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on?"true":"false")});
   if(!tab)tab=isHead?"today":"mark";
   applyTab();
   render();
@@ -984,7 +1097,13 @@ function applyTab(){
   const self=isHead&&tab==="self";
   $("head").classList.toggle("hidden",!isHead||self);
   $("user-view").classList.toggle("hidden",isHead&&!self);
-  document.querySelectorAll("[data-t]").forEach(e=>{const vis=(self&&e.closest("#user-view"))?e.dataset.t!=="grp":e.dataset.t.split(" ").includes(tab);e.classList.toggle("tabhide",!vis)});
+  const one=isCompact&&(!isHead||self);
+  document.documentElement.classList.toggle("onepage",one);
+  document.documentElement.classList.toggle("onepage-stu",one&&!isHead);
+  document.querySelectorAll("[data-t]").forEach(e=>{
+    let vis=(self&&e.closest("#user-view"))?e.dataset.t!=="grp":e.dataset.t.split(" ").includes(tab);
+    if(one&&e.closest("#user-view")) vis=(e.id==="mark-card"||e.id==="calU");
+    e.classList.toggle("tabhide",!vis)});
   renderNav(NAVS[isHead?"head":"user"].map(([id,l])=>`<button type="button" class="${id===tab?"on":""}" data-tab="${id}">${l}</button>`).join(""));
 }
 
@@ -1170,7 +1289,7 @@ function renderHead(){
   const tb=$("tbl").tBodies[0];tb.innerHTML="";
   marked.forEach(n=>{
     const cur=getMark(d,n),tr=document.createElement("tr");
-    cell(tr,n,"n");cell(tr,describe(cur, true)+(hoursOf(cur)?" · "+hoursOf(cur)+" ч":""),"n");
+    cell(tr,nmc(n),"n");cell(tr,describe(cur, true)+(hoursOf(cur)?" · "+hoursOf(cur)+" ч":""),"n");
     const act=document.createElement("div");act.className="ed";
     const e=document.createElement("button");e.textContent=editing.has(n)?"Готово":"Изменить";
     e.onclick=()=>{editing.has(n)?editing.delete(n):editing.add(n);render()};
@@ -1190,7 +1309,7 @@ function renderHead(){
   const ul=$("unmL");ul.innerHTML="";
   unm.forEach(n=>{
     const row=document.createElement("div");row.className="urow";
-    const nm=document.createElement("span");nm.textContent=n;
+    const nm=document.createElement("span");nm.textContent=nmc(n);nm.title=n;
     const sel=document.createElement("select");
     sel.setAttribute("aria-label","Отметить: "+n);
     sel.innerHTML='<option value="">Отметить…</option>'+CODES.map(c=>`<option>${c}</option>`).join("");
@@ -1226,7 +1345,8 @@ function renderHead(){
   
   $("stat").innerHTML="<thead><tr><th>Студент</th><th>Прогулы (пары)</th><th>Всего ч</th><th>ПН ч</th>"+others.map(c=>`<th>${c} ч</th>`).join("")+"</tr></thead><tbody>"+
     rows.map(([n,x])=>`<tr><td class="n"></td><td class="${прогулов(x)?"pn":""}"><b>${прогулов(x)}</b></td><td><b>${x.tot}</b></td><td class="${x.by["ПН"]?"pn":""}">${x.by["ПН"]||0}</td>`+others.map(c=>`<td>${x.by[c]||0}</td>`).join("")+"</tr>").join("")+"</tbody>";
-  [...$("stat").tBodies[0].rows].forEach((tr,i)=>tr.cells[0].textContent=rows[i][0]);
+  $("stat").style.setProperty("--n",Math.max(rows.length,1));
+  [...$("stat").tBodies[0].rows].forEach((tr,i)=>{tr.cells[0].textContent=nmc(rows[i][0]);tr.cells[0].title=rows[i][0]});
 }
 
 function renderUser(){
@@ -1369,7 +1489,7 @@ const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 let calY=null,calM=0,calSel=null;
 const pnOf=m=>pairsOf(m).filter(x=>x==="ПН").length*PAIR_HOURS;
 function renderCal(){
-  if((tab!=="me"&&tab!=="self")||!me)return;
+  if((tab!=="me"&&tab!=="self"&&!document.documentElement.classList.contains("onepage"))||!me)return;
   if(calY===null){const [y,m]=workDate().split("-");calY=+y;calM=+m-1}
   const host=$("calU"),who=myName()||"";
   if(!who){host.innerHTML='<p class="mute">Вас нет в списке. Обратитесь к старосте.</p>';return}
@@ -1578,6 +1698,34 @@ function renderNav(html){ $("bnav").innerHTML=html; navSync(); }
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(navSync);
 })();
 
+/* ===== PIXEL: ripple при нажатии (только без стекла) ===== */
+document.addEventListener("pointerdown",e=>{
+  if(document.documentElement.classList.contains("glass-theme")) return;
+  const b=e.target.closest&&e.target.closest("button");
+  if(!b||b.disabled||b.closest("#bnav")) return;
+  const r=b.getBoundingClientRect(), d=Math.max(r.width,r.height)*2.2, sp=document.createElement("span");
+  sp.className="ripple";
+  sp.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;
+  b.appendChild(sp); setTimeout(()=>sp.remove(),650);
+},true);
+
+/* ===== ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМА (только Сарычев Арсений) ===== */
+$("modeSwitch").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-m]");
+  if(!b||!me||norm(me)!==norm(SUPER_ADMIN)) return;
+  const toHead=b.dataset.m==="head";
+  if(toHead===isHead) return;
+  lsSet("absence:mode",toHead?"head":"user");
+  isHead=toHead; isTempHead=false; tab=null;
+  scrollTo(0,0); show();
+});
+
+/* ===== КОМПАКТНЫЙ РЕЖИМ ===== */
+$("compactBtn").onclick=()=>{
+  isCompact=!isCompact; lsSet("absence:compact",isCompact?"on":"off");
+  applyCompact(); if(me) show(); navSync();
+};
+
 /* ===== ШТОРКА МЕНЮ ===== */
 (function(){
   const sheet=$("sheet"), fab=$("menuFab"), scrim=$("sheetScrim");
@@ -1587,7 +1735,7 @@ function renderNav(html){ $("bnav").innerHTML=html; navSync(); }
   };
   fab.onclick=e=>{e.stopPropagation();setSheet(!sheet.classList.contains("open"))};
   scrim.onclick=()=>setSheet(false);
-  sheet.addEventListener("click",e=>{ if(e.target.closest("#infoBtn,#legendBtn,#logout,.inst")) setSheet(false); },true);
+  sheet.addEventListener("click",e=>{ if(e.target.closest("#infoBtn,#legendBtn,#logout,.inst,#modeSwitch button,#compactBtn")) setSheet(false); },true);
   document.addEventListener("keydown",e=>{ if(e.key==="Escape") setSheet(false); });
   let y0=null;
   sheet.addEventListener("touchstart",e=>{y0=e.touches[0].clientY},{passive:true});
